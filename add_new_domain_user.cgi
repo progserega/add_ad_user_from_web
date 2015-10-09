@@ -49,8 +49,8 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, user):
 	user["email_prefix"]=email_prefix
 	user["email_server1"]=email_server1
 	user["email_server2"]=email_server2
-	#if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
-	#	return False
+	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
+		return False
 	return True
 
 
