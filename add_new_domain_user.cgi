@@ -49,8 +49,8 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, user):
 	user["email_prefix"]=email_prefix
 	user["email_server1"]=email_server1
 	user["email_server2"]=email_server2
-	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
-		return False
+	#if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
+	#	return False
 	return True
 
 
@@ -334,13 +334,18 @@ if create_drsk_user(user_familia,user_name,user_otchestvo,user_description,user)
 else:
 	# Всё хорошо, печатаем результат:
 	print("""<h2>Успешно создан пользователь:</h2>""")
-	print("""<h2>Успешно создан пользователь:</h2>""")
-	print("""<h2>Имя: %s</h2>""" % user["fio"].encode('utf8'))
-	print("""<h2>Логин: %s</h2>""" % user["login"].encode('utf8'))
-	print("""<h2>Имя: %s</h2>""" % user["passwd"].encode('utf8'))
-	print("""<h2>Имя: %s</h2>""" % user["email_prefix"].encode('utf8'))
-	print("""<h2>Имя: %s</h2>""" % user["email_server1"].encode('utf8'))
-	print("""<h2>Имя: %s</h2>""" % user["email_server2"].encode('utf8'))
+	print("""<h2>Имя:</h2>
+	<p>%s</p>""" % user["fio"].encode('utf8'))
+	print("""<h2>Логин:</h2>
+	<p>%s</p>""" % user["login"].encode('utf8'))
+	print("""<h2>Пароль:</h2>
+	<p>%s</p>""" % user["passwd"].encode('utf8'))
+	print("""<h2>Префикс почты:</h2>
+	<p>%s</p>""" % user["email_prefix"].encode('utf8'))
+	print("""<h2>Почтовый ящик1:</h2>
+	<p>%s</p>""" % user["email_server1"].encode('utf8'))
+	print("""<h2>Почтовый ящик2:</h2>
+	<p>%s</p>""" % user["email_server2"].encode('utf8'))
 	print("</body></html>")
 	log.add("SUCCESS create user: (%(user_familia)s, %(user_name)s, %(user_otchestvo)s, %(user_description)s),\
  login: %(login)s, passwd: '%(passwd)s', email_server1: %(email_server1)s, email_server2: %(email_server2)s"
