@@ -324,6 +324,8 @@ for fio in users_from_db_fio:
 	if ip == "":
 		ip="-"
 
+	html_status="""<span class="banned">%s</span>""" % "Не заведён в домене"
+
 	print("""<TR>
 		 <TD>%(index)d</TD>
 		 <TD>%(full_name)s</TD>
