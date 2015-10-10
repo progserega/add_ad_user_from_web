@@ -141,6 +141,37 @@ for account_name in users:
 		ip=users_from_db[account_name]["ip"]
 		hostname=users_from_db[account_name]["hostname"]
 
+	if description == "":
+		description="-"
+	if passwd == "":
+		passwd="-"
+	if old_login == "":
+		old_login="-"
+	if drsk_email == "":
+		drsk_email="-"
+	if drsk_email_passwd == "":
+		drsk_email_passwd="-"
+	if rsprim_email == "":
+		rsprim_email="-"
+	if rsprim_email_passwd == "":
+		rsprim_email_passwd="-"
+	if os == "":
+		os="-"
+	if os_version == "":
+		os_version="-"
+	if patches == "":
+		patches="-"
+	if add_time == "":
+		add_time="-"
+	if add_ip == "":
+		add_ip="-"
+	if add_user_name == "":
+		add_user_name="-"
+	if hostname == "":
+		hostname="-"
+	if ip == "":
+		ip="-"
+
 	print("""<TR>
 		 <TD>%(index)d</TD>
 		 <TD>%(full_name)s</TD>
