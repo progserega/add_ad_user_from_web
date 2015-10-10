@@ -60,7 +60,7 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 			'%(patches)s',
 			'%(doljnost)s',
 			now(),
-			'%(add_ip)s
+			'%(add_ip)s'
 		)""" % \
 		{\
 			"fio":fio,\
