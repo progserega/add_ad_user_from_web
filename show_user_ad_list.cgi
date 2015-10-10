@@ -77,6 +77,8 @@ print("""
 				<TH COLSPAN=1>Почта rsprim</TH>
 				<TH COLSPAN=1>Пароль почты rsprim</TH>
 				<TH COLSPAN=1>Статус учётки</TH>
+				<TH COLSPAN=1>Имя хоста польз.</TH>
+				<TH COLSPAN=1>IP хоста польз.</TH>
 				<TH COLSPAN=1>Когда заведена</TH>
 				<TH COLSPAN=1>Кто заводил</TH>
 				<TH COLSPAN=1>С какого IP заведена</TH>
@@ -134,6 +136,8 @@ for account_name in users:
 		add_time=users_from_db[account_name]["add_time"]
 		add_ip=users_from_db[account_name]["add_ip"]
 		add_user_name=users_from_db[account_name]["add_user_name"]
+		ip=users_from_db[account_name]["ip"]
+		hostname=users_from_db[account_name]["hostname"]
 
 	print("""<TR>
 		 <TD>%(index)d</TD>
@@ -147,6 +151,8 @@ for account_name in users:
 		 <TD>%(rsprim_email)s</TD>
 		 <TD>%(rsprim_email_passwd)s</TD>
 		 <TD>%(status)s</TD>
+		 <TD>%(hostname)s</TD>
+		 <TD>%(ip)s</TD>
 		 <TD>%(add_time)s</TD>
 		 <TD>%(add_user_name)s</TD>
 		 <TD>%(add_ip)s</TD>
@@ -165,6 +171,8 @@ for account_name in users:
 		 "drsk_email_passwd":drsk_email_passwd,\
 		 "rsprim_email":rsprim_email,\
 		 "rsprim_email_passwd":rsprim_email_passwd,\
+		 "hostname":hostname,\
+		 "ip":ip,\
 		 "os":os,\
 		 "os_version":os_version,\
 		 "patches":patches,\
