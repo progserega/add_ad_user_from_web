@@ -6,6 +6,7 @@ BIND_DN = "admin_login@company.ru"
 BIND_PASS = "admin_passwd"
 domain="company.ru"
 base_user_dn="OU=340,OU=Users,OU=Domain Root Entry,DC=company,DC=ru"
+base_comp_dn="OU=340,OU=Comps,OU=Domain Root Entry,DC=company,DC=ru"
 
 group_acl_base="OU=340,OU=ACLG,OU=Groups,OU=Domain Root Entry,DC=company,DC=ru"
 default_acl_groups=["ACL_GROUP-RDPU", "ACL_GROUP-00"]
