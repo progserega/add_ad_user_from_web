@@ -101,19 +101,19 @@ for account_name in users:
 	else:
 		html_status="""<span class="normal">%s</span>""" % status
 
-	description=""
-	passwd=""
-	old_login=""
-	drsk_email=""
-	drsk_email_passwd=""
-	rsprim_email=""
-	rsprim_email_passwd=""
-	os=""
-	os_version=""
-	patches=""
-	add_time=""
-	add_ip=""
-	add_user_name=""
+	description="-"
+	passwd="-"
+	old_login="-"
+	drsk_email="-"
+	drsk_email_passwd="-"
+	rsprim_email="-"
+	rsprim_email_passwd="-"
+	os="-"
+	os_version="-"
+	patches="-"
+	add_time="-"
+	add_ip="-"
+	add_user_name="-"
 
 	if "description" in user:
 		description=user["description"]
