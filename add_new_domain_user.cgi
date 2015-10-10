@@ -54,8 +54,8 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, user):
 	user["email_server1"]=email_server1
 	user["email_server2"]=email_server2
 	user["description"]=description
-	#if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
-	#	return False
+	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
+		return False
 	return True
 
 
@@ -84,7 +84,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 		ldap_connection = ldap.initialize(conf.LDAP_SERVER)
 		ldap_connection.simple_bind_s(conf.BIND_DN, conf.BIND_PASS)
 	except ldap.LDAPError, error_message:
-		print "Error connecting to LDAP server: %s" % error_message
+		log.add("Error connecting to LDAP server: %s" % error_message)
 		return False
 
 	# Check and see if user exists
@@ -95,11 +95,12 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 			')(objectClass=person))',
 			['distinguishedName'])
 	except ldap.LDAPError, error_message:
-		print "Error finding username: %s" % error_message
+		log.add("Error finding username: %s" % error_message)
 		return False
 
 	# Check the results
 	if len(user_results) != 0:
+		log.add("User %s already exists in AD:" % username )
 		print "User", username, "already exists in AD:", \
 		user_results[0][1]['distinguishedName'][0]
 		return False
@@ -145,21 +146,21 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 	try:
 		ldap_connection.add_s(user_dn, user_ldif)
 	except ldap.LDAPError, error_message:
-		print "Error adding new user: %s" % error_message
+		log.add("Error adding new user: %s" % error_message)
 		return False
 
 	# Add the password
 	try:
 		ldap_connection.modify_s(user_dn, add_pass)
 	except ldap.LDAPError, error_message:
-		print "Error setting password: %s" % error_message
+		log.add("Error setting password: %s" % error_message)
 		return False
 
 	# Change the account back to enabled
 	try:
 		ldap_connection.modify_s(user_dn, mod_acct)
 	except ldap.LDAPError, error_message:
-		print "Error enabling user: %s" % error_message
+		log.add("Error enabling user: %s" % error_message)
 		return False
 
 	# Add user to their primary group
@@ -168,7 +169,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 		try:
 			ldap_connection.modify_s(GROUP_DN, add_member)
 		except ldap.LDAPError, error_message:
-			print "Error adding user to group: %s" % error_message
+			log.add("Error adding user to group: %s" % error_message)
 			return False
 
 	# Modify user's primary group ID
