@@ -12,6 +12,7 @@ from ldap.controls import SimplePagedResultsControl
 import ldap.modlist as modlist
 import config as conf
 import logger as log
+import user_ad_postgres_db as ad_user_db
 
 SCRIPT = 1
 ACCOUNTDISABLE = 2
@@ -44,13 +45,17 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, user):
 		print(u"Почта rsprim: %s" % email_server2)
 		print(u"")
 	user["fio"]=fio
+	user["name"]=user_name
+	user["familiya"]=user_familia
+	user["otchestvo"]=user_otchestvo
 	user["login"]=login
 	user["passwd"]=passwd
 	user["email_prefix"]=email_prefix
 	user["email_server1"]=email_server1
 	user["email_server2"]=email_server2
-	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
-		return False
+	user["description"]=description
+	#if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
+	#	return False
 	return True
 
 
@@ -296,6 +301,7 @@ if conf.DEBUG:
 	user_name = u"Имя"
 	user_otchestvo = u"Отчество"
 	user_description = u"(А - для сортировки) описание"
+	user_addr="DEBUG - empty"
 else:
 	form = cgi.FieldStorage()
 
@@ -359,4 +365,24 @@ else:
 		"email_server1":user["email_server1"],
 		"email_server2":user["email_server2"]
 		})
+	# Добавляем пользователя в базу:
+	if ad_user_db.add_ad_user(\
+			name=user["name"], \
+			familiya=user["familiya"],\
+			otchestvo=user["otchestvo"], \
+			login=user["login"],\
+			old_login="",\
+			passwd=user["passwd"], \
+			drsk_email=user["email_server1"],\
+			drsk_email_passwd=user["passwd"],\
+			rsprim_email=user["email_server2"],\
+			rsprim_email_passwd=user["passwd"],\
+			hostname="",\
+			ip="",\
+			os="",\
+			os_version="",\
+			patches="",\
+			doljnost=user["description"],\
+			add_ip=user_addr) is False:
+		sys.exit(1)
 	sys.exit(0)
