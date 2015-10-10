@@ -305,9 +305,10 @@ if conf.DEBUG:
 else:
 	form = cgi.FieldStorage()
 
-	user_agent=os.getenv("HTTP_USER_AGENT")
-	user_addr=os.getenv("REMOTE_ADDR")
-	user_host=os.getenv("REMOTE_HOST")
+	web_user_agent=os.getenv("HTTP_USER_AGENT")
+	web_user_addr=os.getenv("REMOTE_ADDR")
+	web_user_host=os.getenv("REMOTE_HOST")
+	web_user_name=os.getenv('AUTHENTICATE_SAMACCOUNTNAME')
 
 	print("""
 	<html>
@@ -317,6 +318,8 @@ else:
 	</head>
 	<body>
 	""" )
+	print("user_name=%s" % web_user_name )
+	sys.exit(0)
 
 	# Поле 'work_sites_regex' содержит не пустое значение:
 	if 'user_familia' in form and 'user_name' in form and 'user_otchestvo' in form and 'user_description' in form:
@@ -383,6 +386,7 @@ else:
 			os_version="",\
 			patches="",\
 			doljnost=user["description"],\
-			add_ip=user_addr) is False:
+			add_user_name=web_user_name,\
+			add_ip=web_user_addr) is False:
 		sys.exit(1)
 	sys.exit(0)

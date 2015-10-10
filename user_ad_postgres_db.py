@@ -8,7 +8,7 @@ import psycopg2.extras
 import config as config
 import logger as log
 
-def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email, drsk_email_passwd, rsprim_email, rsprim_email_passwd, hostname, ip, os, os_version, patches, doljnost, add_ip):
+def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email, drsk_email_passwd, rsprim_email, rsprim_email_passwd, hostname, ip, os, os_version, patches, doljnost, add_ip, add_user_name):
 	try:
 		if config.DEBUG:
 			log.add("connect to: dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
@@ -39,7 +39,8 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 			patches,
 			doljnost,
 			add_time,
-			add_ip
+			add_ip,
+			add_user_name
 		) 
 		VALUES (
 			'%(fio)s',
@@ -60,7 +61,8 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 			'%(patches)s',
 			'%(doljnost)s',
 			now(),
-			'%(add_ip)s'
+			'%(add_ip)s',
+			'%(add_user_name)s'
 		)""" % \
 		{\
 			"fio":fio,\
@@ -80,7 +82,8 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 			"os_version":os_version,\
 			"patches":patches,\
 			"doljnost":doljnost,\
-			"add_ip":add_ip\
+			"add_ip":add_ip,\
+			"add_user_name":add_user_name\
 		}
 		if config.DEBUG:
 			log.add("sql=%s" % sql)
