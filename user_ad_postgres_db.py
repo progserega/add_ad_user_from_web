@@ -61,26 +61,26 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 			'%(doljnost)s',
 			now(),
 			'%(add_ip)s
-		)""" % 
-		{
-			"fio":fio,
-			"name":name,
-			"familiya":familiya,
-			"otchestvo":otchestvo,
-			"login":login,
-			"old_login":old_login,
-			"passwd":passwd,
-			"drsk_email":drsk_email,
-			"drsk_email_passwd":drsk_email_passwd,
-			"rsprim_email":rsprim_email,
-			"rsprim_email_passwd":rsprim_email_passwd,
-			"hostname":hostname,
-			"ip":ip,
-			"os":os,
-			"os_version":os_version,
-			"patches":patches,
-			"doljnost":doljnost,
-			"add_ip":add_ip
+		)""" % \
+		{\
+			"fio":fio,\
+			"name":name,\
+			"familiya":familiya,\
+			"otchestvo":otchestvo,\
+			"login":login,\
+			"old_login":old_login,\
+			"passwd":passwd,\
+			"drsk_email":drsk_email,\
+			"drsk_email_passwd":drsk_email_passwd,\
+			"rsprim_email":rsprim_email,\
+			"rsprim_email_passwd":rsprim_email_passwd,\
+			"hostname":hostname,\
+			"ip":ip,\
+			"os":os,\
+			"os_version":os_version,\
+			"patches":patches,\
+			"doljnost":doljnost,\
+			"add_ip":add_ip\
 		}
 		if config.DEBUG:
 			log.add("sql=%s" % sql)
