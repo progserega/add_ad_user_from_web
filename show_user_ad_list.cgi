@@ -222,6 +222,12 @@ print("</TABLE>")
 
 
 print("""
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 		<TABLE BORDER>
 		<TR>    
 				<TH COLSPAN=19>Список пользователей из базы данных, не заведённых в домене</TH>
