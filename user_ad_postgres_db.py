@@ -20,7 +20,7 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 	fio=familiya + " " + name + " " + otchestvo
 
 	try:
-		cur.execute("""insert into ad_users (
+		sql="""insert into ad_users (
 			fio,
 			name,
 			familiya,
@@ -81,7 +81,10 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 			"patches":patches,
 			"doljnost":doljnost,
 			"add_ip":add_ip
-		})
+		}
+		if config.DEBUG:
+			log.add("sql=%s" % sql)
+		cur.execute(sql)
 		conn.commit()
 	except:
 		log.add("I am unable insert data to db");return False
