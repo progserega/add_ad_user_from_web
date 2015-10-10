@@ -318,8 +318,6 @@ else:
 	</head>
 	<body>
 	""" )
-	print("user_name=%s" % web_user_name )
-	sys.exit(0)
 
 	# Поле 'work_sites_regex' содержит не пустое значение:
 	if 'user_familia' in form and 'user_name' in form and 'user_otchestvo' in form and 'user_description' in form:
