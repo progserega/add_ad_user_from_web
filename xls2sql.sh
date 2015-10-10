@@ -20,5 +20,7 @@ do
 	name="`echo $fio|awk '{print $2}' FS=' '|sed 's/^ *//;s/^"*//;s/ *$//;s/"*$//'|sed 's/^ *//;s/ *$//'`"
 	otchestvo="`echo $fio|awk '{print $3}' FS=' '|sed 's/^ *//;s/^"*//;s/ *$//;s/"*$//'|sed 's/^ *//;s/ *$//'`"
 
-	echo "insert into ad_users (fio,name,familiya,otchestvo,login,old_login,passwd,drsk_email,drsk_email_passwd,rsprim_email,rsprim_email_passwd,hostname,ip,os,os_version,patches,doljnost,add_time,add_ip,add_user_name) 	VALUES ('${fio}','${name}','${familiya}','${otchestvo}','${login}','${old_login}','${passwd}','${drsk_email}','${drsk_email_passwd}','${rsprim_email}','-','${hostname}','${ip}','${os}','${os_version}','${patches}','${doljnost}',now(),'${add_ip}','${add_user_name}');"
+	add_user_name="импорт из xls"
+
+	echo "insert into ad_users (fio,name,familiya,otchestvo,login,old_login,passwd,drsk_email,drsk_email_passwd,rsprim_email,rsprim_email_passwd,hostname,ip,os,os_version,patches,doljnost,add_time,add_ip,add_user_name) 	VALUES (\$\$${fio}\$\$,\$\$${name}\$\$,\$\$${familiya}\$\$,\$\$${otchestvo}\$\$,\$\$${login}\$\$,\$\$${old_login}\$\$,\$\$${passwd}\$\$,\$\$${drsk_email}\$\$,\$\$${drsk_email_passwd}\$\$,\$\$${rsprim_email}\$\$,\$\$-\$\$,\$\$${hostname}\$\$,\$\$${ip}\$\$,\$\$${os}\$\$,\$\$${os_version}\$\$,\$\$${patches}\$\$,\$\$${doljnost}\$\$,now(),\$\$${add_ip}\$\$,\$\$${add_user_name}\$\$);"
 done
