@@ -63,7 +63,7 @@ users_from_db=ad_user_db.get_ad_user_list()
 print("""
 		<TABLE BORDER>
 		<TR>    
-				<TH COLSPAN=17>Список пользователей домена</TH>
+				<TH COLSPAN=19>Список пользователей домена</TH>
 		</TR>
 		<TR>
 				<TH COLSPAN=1>№</TH>
@@ -119,6 +119,8 @@ for account_name in users:
 	add_time="-"
 	add_ip="-"
 	add_user_name="-"
+	hostname="-"
+	ip="-"
 
 	if "description" in user:
 		description=user["description"]
