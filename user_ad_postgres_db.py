@@ -16,8 +16,6 @@ def get_ad_user_list():
 		cur = conn.cursor()
 	except:
 		log.add("I am unable to connect to the database");return False
-	fio=familiya + " " + name + " " + otchestvo
-
 	try:
 		sql="""select
 			fio,
