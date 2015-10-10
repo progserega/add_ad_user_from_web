@@ -63,7 +63,7 @@ users_from_db=ad_user_db.get_ad_user_list()
 print("""
 		<TABLE BORDER>
 		<TR>    
-				<TH COLSPAN=14>Список пользователей домена</TH>
+				<TH COLSPAN=17>Список пользователей домена</TH>
 		</TR>
 		<TR>
 				<TH COLSPAN=1>№</TH>
@@ -80,6 +80,9 @@ print("""
 				<TH COLSPAN=1>Когда заведена</TH>
 				<TH COLSPAN=1>Кто заводил</TH>
 				<TH COLSPAN=1>С какого IP заведена</TH>
+				<TH COLSPAN=1>ОС</TH>
+				<TH COLSPAN=1>Версия ОС</TH>
+				<TH COLSPAN=1>Патчи</TH>
 		</TR>
 		""")
 
@@ -147,6 +150,9 @@ for account_name in users:
 		 <TD>%(add_time)s</TD>
 		 <TD>%(add_user_name)s</TD>
 		 <TD>%(add_ip)s</TD>
+		 <TD>%(os)s</TD>
+		 <TD>%(os_version)s</TD>
+		 <TD>%(patches)s</TD>
 		 </TR>""" % {\
 		 "index":index, \
 		 "full_name":user["full_name"],\
