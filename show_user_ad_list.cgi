@@ -69,7 +69,6 @@ print("""
 				<TH COLSPAN=1>№</TH>
 				<TH COLSPAN=1>Полное имя пользователя</TH>
 				<TH COLSPAN=1>Логин</TH>
-				<TH COLSPAN=1>Старый логин</TH>
 				<TH COLSPAN=1>Пароль</TH>
 				<TH COLSPAN=1>Описание</TH>
 				<TH COLSPAN=1>Почта ДРСК</TH>
@@ -79,12 +78,13 @@ print("""
 				<TH COLSPAN=1>Статус учётки</TH>
 				<TH COLSPAN=1>Имя хоста польз.</TH>
 				<TH COLSPAN=1>IP хоста польз.</TH>
-				<TH COLSPAN=1>Когда заведена</TH>
-				<TH COLSPAN=1>Кто заводил</TH>
-				<TH COLSPAN=1>С какого IP заведена</TH>
 				<TH COLSPAN=1>ОС</TH>
 				<TH COLSPAN=1>Версия ОС</TH>
 				<TH COLSPAN=1>Патчи</TH>
+				<TH COLSPAN=1>Старый логин</TH>
+				<TH COLSPAN=1>С какого IP заведена</TH>
+				<TH COLSPAN=1>Когда заведена</TH>
+				<TH COLSPAN=1>Кто заводил</TH>
 		</TR>
 		""")
 
@@ -145,7 +145,6 @@ for account_name in users:
 		 <TD>%(index)d</TD>
 		 <TD>%(full_name)s</TD>
 		 <TD>%(account_name)s</TD>
-		 <TD>%(old_login)s</TD>
 		 <TD>%(passwd)s</TD>
 		 <TD>%(description)s</TD>
 		 <TD>%(drsk_email)s</TD>
@@ -155,12 +154,13 @@ for account_name in users:
 		 <TD>%(status)s</TD>
 		 <TD>%(hostname)s</TD>
 		 <TD>%(ip)s</TD>
-		 <TD>%(add_time)s</TD>
-		 <TD>%(add_user_name)s</TD>
-		 <TD>%(add_ip)s</TD>
 		 <TD>%(os)s</TD>
 		 <TD>%(os_version)s</TD>
 		 <TD>%(patches)s</TD>
+		 <TD>%(old_login)s</TD>
+		 <TD>%(add_ip)s</TD>
+		 <TD>%(add_time)s</TD>
+		 <TD>%(add_user_name)s</TD>
 		 </TR>""" % {\
 		 "index":index, \
 		 "full_name":user["full_name"],\
