@@ -116,7 +116,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 	user_attrs['givenName'] = fname
 	user_attrs['sn'] = lname
 	user_attrs['displayName'] = familiya + ' ' + name + ' ' + otchestvo
-	user_attrs['displayNamePrintable'] = familiya + ' ' + name + ' ' + otchestvo
+	user_attrs['canonicalName'] = familiya + ' ' + name + ' ' + otchestvo
 	user_attrs['description'] = description
 	#user_attrs['userAccountControl'] = '514'
 	user_attrs['userAccountControl'] = "%d" % (NORMAL_ACCOUNT + DONT_EXPIRE_PASSWORD + ACCOUNTDISABLE)
