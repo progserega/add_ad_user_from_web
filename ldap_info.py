@@ -26,9 +26,15 @@ def init():
 	global ldap_passwd
 
 	try:
-		ad = ldap.initialize(ldap_url)
-		ad.set_option(ldap.OPT_REFERRALS,0)
-		ad.simple_bind_s(ldap_user,ldap_passwd)
+		# http:
+		#ad = ldap.initialize(ldap_url)
+		#ad.set_option(ldap.OPT_REFERRALS,0)
+		#ad.simple_bind_s(ldap_user,ldap_passwd)
+
+		# https:
+		ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+		ad = ldap.initialize(conf.LDAP_SERVER)
+		ad.simple_bind_s(conf.BIND_DN, conf.BIND_PASS)
 	except ldap.LDAPError, desc:
 		print("error", desc)
 	return ad

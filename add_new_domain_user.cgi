@@ -82,8 +82,6 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 		#ldap_connection.set_option( ldap.OPT_DEBUG_LEVEL, 255 )
 		ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
 		ldap_connection = ldap.initialize(conf.LDAP_SERVER)
-
-
 		ldap_connection.simple_bind_s(conf.BIND_DN, conf.BIND_PASS)
 	except ldap.LDAPError, error_message:
 		print "Error connecting to LDAP server: %s" % error_message
