@@ -57,7 +57,8 @@ P { margin-bottom: 0.21cm }
 l=ad.init()
 users=ad.get_users(l)
 comps=ad.get_computers(l)
-users_from_db=ad_user_db.get_ad_user_list()
+users_from_db=ad_user_db.get_ad_user_list_by_login()
+users_from_db_fio=ad_user_db.get_ad_user_list_by_fio()
 
 
 print("""
@@ -140,6 +141,7 @@ for account_name in users:
 		add_user_name=users_from_db[account_name]["add_user_name"]
 		ip=users_from_db[account_name]["ip"]
 		hostname=users_from_db[account_name]["hostname"]
+		users_from_db[account_name]["show"]=True
 
 	if description == "":
 		description="-"
@@ -217,6 +219,159 @@ for account_name in users:
 
 
 print("</TABLE>")
+
+
+print("""
+		<TABLE BORDER>
+		<TR>    
+				<TH COLSPAN=19>Список пользователей из базы данных, не заведённых в домене</TH>
+		</TR>
+		<TR>
+				<TH COLSPAN=1>№</TH>
+				<TH COLSPAN=1>Полное имя пользователя</TH>
+				<TH COLSPAN=1>Логин</TH>
+				<TH COLSPAN=1>Пароль</TH>
+				<TH COLSPAN=1>Описание</TH>
+				<TH COLSPAN=1>Почта ДРСК</TH>
+				<TH COLSPAN=1>Пароль почты ДРСК</TH>
+				<TH COLSPAN=1>Почта rsprim</TH>
+				<TH COLSPAN=1>Пароль почты rsprim</TH>
+				<TH COLSPAN=1>Статус учётки</TH>
+				<TH COLSPAN=1>Имя хоста польз.</TH>
+				<TH COLSPAN=1>IP хоста польз.</TH>
+				<TH COLSPAN=1>ОС</TH>
+				<TH COLSPAN=1>Версия ОС</TH>
+				<TH COLSPAN=1>Патчи</TH>
+				<TH COLSPAN=1>Старый логин</TH>
+				<TH COLSPAN=1>С какого IP заведена</TH>
+				<TH COLSPAN=1>Когда заведена</TH>
+				<TH COLSPAN=1>Кто заводил</TH>
+		</TR>
+		""")
+
+index=1
+for fio in users_from_db_fio:
+	user=users_from_db_fio[fio]
+	status="-"
+	description="-"
+	passwd="-"
+	old_login="-"
+	drsk_email="-"
+	drsk_email_passwd="-"
+	rsprim_email="-"
+	rsprim_email_passwd="-"
+	os="-"
+	os_version="-"
+	patches="-"
+	add_time="-"
+	add_ip="-"
+	add_user_name="-"
+	hostname="-"
+	ip="-"
+
+	# Показываем, если нет в домене:
+	if user["login"] in users:
+		continue
+
+	passwd=user["passwd"]
+	old_login=user["old_login"]
+	drsk_email=user["drsk_email"]
+	drsk_email_passwd=user["drsk_email_passwd"]
+	rsprim_email=user["rsprim_email"]
+	rsprim_email_passwd=user["rsprim_email_passwd"]
+	os=user["os"]
+	os_version=user["os_version"]
+	patches=user["patches"]
+	add_time=user["add_time"]
+	add_ip=user["add_ip"]
+	add_user_name=user["add_user_name"]
+	ip=user["ip"]
+	hostname=user["hostname"]
+	user["show"]=True
+	description=user["doljnost"]
+	account_name=user["login"]
+
+	if account_name == "":
+		account_name="-"
+	if description == "":
+		description="-"
+	if passwd == "":
+		passwd="-"
+	if old_login == "":
+		old_login="-"
+	if drsk_email == "":
+		drsk_email="-"
+	if drsk_email_passwd == "":
+		drsk_email_passwd="-"
+	if rsprim_email == "":
+		rsprim_email="-"
+	if rsprim_email_passwd == "":
+		rsprim_email_passwd="-"
+	if os == "":
+		os="-"
+	if os_version == "":
+		os_version="-"
+	if patches == "":
+		patches="-"
+	if add_time == "":
+		add_time="-"
+	if add_ip == "":
+		add_ip="-"
+	if add_user_name == "":
+		add_user_name="-"
+	if hostname == "":
+		hostname="-"
+	if ip == "":
+		ip="-"
+
+	print("""<TR>
+		 <TD>%(index)d</TD>
+		 <TD>%(full_name)s</TD>
+		 <TD>%(account_name)s</TD>
+		 <TD>%(passwd)s</TD>
+		 <TD>%(description)s</TD>
+		 <TD>%(drsk_email)s</TD>
+		 <TD>%(drsk_email_passwd)s</TD>
+		 <TD>%(rsprim_email)s</TD>
+		 <TD>%(rsprim_email_passwd)s</TD>
+		 <TD>%(status)s</TD>
+		 <TD>%(hostname)s</TD>
+		 <TD>%(ip)s</TD>
+		 <TD>%(os)s</TD>
+		 <TD>%(os_version)s</TD>
+		 <TD>%(patches)s</TD>
+		 <TD>%(old_login)s</TD>
+		 <TD>%(add_ip)s</TD>
+		 <TD>%(add_time)s</TD>
+		 <TD>%(add_user_name)s</TD>
+		 </TR>""" % {\
+		 "index":index, \
+		 "full_name":fio,\
+		 "description":description,\
+		 "account_name":account_name,\
+		 "status":html_status,\
+		 "passwd":passwd,\
+		 "old_login":old_login,\
+		 "drsk_email":drsk_email,\
+		 "drsk_email_passwd":drsk_email_passwd,\
+		 "rsprim_email":rsprim_email,\
+		 "rsprim_email_passwd":rsprim_email_passwd,\
+		 "hostname":hostname,\
+		 "ip":ip,\
+		 "os":os,\
+		 "os_version":os_version,\
+		 "patches":patches,\
+		 "add_time":add_time,\
+		 "add_ip":add_ip,\
+		 "add_user_name":add_user_name\
+		 })
+	index+=1
+
+
+print("</TABLE>")
+
+
+
 print("""
 </body>
 </html>
