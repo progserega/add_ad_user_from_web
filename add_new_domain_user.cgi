@@ -12,6 +12,7 @@ from ldap.controls import SimplePagedResultsControl
 import ldap.modlist as modlist
 import config as conf
 import logger as log
+import user_ad_postgres_db as ad_user_db
 
 SCRIPT = 1
 ACCOUNTDISABLE = 2
@@ -44,11 +45,15 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, user):
 		print(u"Почта rsprim: %s" % email_server2)
 		print(u"")
 	user["fio"]=fio
+	user["name"]=user_name
+	user["familiya"]=user_familia
+	user["otchestvo"]=user_otchestvo
 	user["login"]=login
 	user["passwd"]=passwd
 	user["email_prefix"]=email_prefix
 	user["email_server1"]=email_server1
 	user["email_server2"]=email_server2
+	user["description"]=description
 	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
 		return False
 	return True
@@ -77,11 +82,9 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 		#ldap_connection.set_option( ldap.OPT_DEBUG_LEVEL, 255 )
 		ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
 		ldap_connection = ldap.initialize(conf.LDAP_SERVER)
-
-
 		ldap_connection.simple_bind_s(conf.BIND_DN, conf.BIND_PASS)
 	except ldap.LDAPError, error_message:
-		print "Error connecting to LDAP server: %s" % error_message
+		log.add("Error connecting to LDAP server: %s" % error_message)
 		return False
 
 	# Check and see if user exists
@@ -92,11 +95,12 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 			')(objectClass=person))',
 			['distinguishedName'])
 	except ldap.LDAPError, error_message:
-		print "Error finding username: %s" % error_message
+		log.add("Error finding username: %s" % error_message)
 		return False
 
 	# Check the results
 	if len(user_results) != 0:
+		log.add("User %s already exists in AD:" % username )
 		print "User", username, "already exists in AD:", \
 		user_results[0][1]['distinguishedName'][0]
 		return False
@@ -112,7 +116,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 	user_attrs['givenName'] = fname
 	user_attrs['sn'] = lname
 	user_attrs['displayName'] = familiya + ' ' + name + ' ' + otchestvo
-	user_attrs['displayNamePrintable'] = familiya + ' ' + name + ' ' + otchestvo
+	#user_attrs['canonicalName'] = familiya + ' ' + name + ' ' + otchestvo
 	user_attrs['description'] = description
 	#user_attrs['userAccountControl'] = '514'
 	user_attrs['userAccountControl'] = "%d" % (NORMAL_ACCOUNT + DONT_EXPIRE_PASSWORD + ACCOUNTDISABLE)
@@ -142,21 +146,21 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 	try:
 		ldap_connection.add_s(user_dn, user_ldif)
 	except ldap.LDAPError, error_message:
-		print "Error adding new user: %s" % error_message
+		log.add("Error adding new user: %s" % error_message)
 		return False
 
 	# Add the password
 	try:
 		ldap_connection.modify_s(user_dn, add_pass)
 	except ldap.LDAPError, error_message:
-		print "Error setting password: %s" % error_message
+		log.add("Error setting password: %s" % error_message)
 		return False
 
 	# Change the account back to enabled
 	try:
 		ldap_connection.modify_s(user_dn, mod_acct)
 	except ldap.LDAPError, error_message:
-		print "Error enabling user: %s" % error_message
+		log.add("Error enabling user: %s" % error_message)
 		return False
 
 	# Add user to their primary group
@@ -165,7 +169,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 		try:
 			ldap_connection.modify_s(GROUP_DN, add_member)
 		except ldap.LDAPError, error_message:
-			print "Error adding user to group: %s" % error_message
+			log.add("Error adding user to group: %s" % error_message)
 			return False
 
 	# Modify user's primary group ID
@@ -296,12 +300,14 @@ if conf.DEBUG:
 	user_name = u"Имя"
 	user_otchestvo = u"Отчество"
 	user_description = u"(А - для сортировки) описание"
+	user_addr="DEBUG - empty"
 else:
 	form = cgi.FieldStorage()
 
-	user_agent=os.getenv("HTTP_USER_AGENT")
-	user_addr=os.getenv("REMOTE_ADDR")
-	user_host=os.getenv("REMOTE_HOST")
+	web_user_agent=os.getenv("HTTP_USER_AGENT")
+	web_user_addr=os.getenv("REMOTE_ADDR")
+	web_user_host=os.getenv("REMOTE_HOST")
+	web_user_name=os.getenv('AUTHENTICATE_SAMACCOUNTNAME')
 
 	print("""
 	<html>
@@ -359,4 +365,25 @@ else:
 		"email_server1":user["email_server1"],
 		"email_server2":user["email_server2"]
 		})
+	# Добавляем пользователя в базу:
+	if ad_user_db.add_ad_user(\
+			name=user["name"], \
+			familiya=user["familiya"],\
+			otchestvo=user["otchestvo"], \
+			login=user["login"],\
+			old_login="",\
+			passwd=user["passwd"], \
+			drsk_email=user["email_server1"],\
+			drsk_email_passwd=user["passwd"],\
+			rsprim_email=user["email_server2"],\
+			rsprim_email_passwd=user["passwd"],\
+			hostname="",\
+			ip="",\
+			os="",\
+			os_version="",\
+			patches="",\
+			doljnost=user["description"],\
+			add_user_name=web_user_name,\
+			add_ip=web_user_addr) is False:
+		sys.exit(1)
 	sys.exit(0)

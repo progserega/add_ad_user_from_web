@@ -1,0 +1,6 @@
+add_user_to_ad.log
+config.py
+config.pyc
+logger.pyc
+user_ad_postgres_db.pyc
+.htaccess
