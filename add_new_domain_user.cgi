@@ -13,6 +13,7 @@ import ldap.modlist as modlist
 import config as conf
 import logger as log
 import user_ad_postgres_db as ad_user_db
+import add_to_email_db as email_db
 
 SCRIPT = 1
 ACCOUNTDISABLE = 2
@@ -29,8 +30,8 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	name=user_name
 	otch=user_otchestvo
 	fio=fam + " " + name + " " + otch
-	login=rus2en(fam.lower()) + "_" + rus2en(name[0].lower()) + rus2en(otch[0].lower())  
-	email_prefix=rus2en(fam.lower()) + "-" + rus2en(name[0].lower()) + rus2en(otch[0].lower())  
+	login=rus2en(fam.lower()) + "_" + rus2en(name.lower())[0] + rus2en(otch.lower())[0]  
+	email_prefix=rus2en(fam.lower()) + "-" + rus2en(name.lower())[0] + rus2en(otch.lower())[0]  
 	email_server1=email_prefix+conf.email_server1_postfix
 	email_server2=email_prefix+conf.email_server2_postfix
 	passwd=get_passwd()
@@ -56,6 +57,24 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	user["description"]=description
 	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), company.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
 		return False
+	# Добавляем в почтовые сервера:
+
+	if db_email_server1_passwd is Defined:
+		if email_db.add_user_to_exim_db(db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=email_domain, email_passwd=password, email_descr=fio) == False:
+			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,email_domain)))
+			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server1_host))
+		else:
+			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,email_domain)))
+			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server1_host))
+
+	if db_email_server2_passwd is Defined:
+		if email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=email_domain, email_passwd=password, email_descr=fio) == False:
+			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,email_domain)))
+			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server2_host))
+		else:
+			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,email_domain)))
+			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server2_host))
+
 	return True
 
 
