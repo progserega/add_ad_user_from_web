@@ -13,6 +13,16 @@ default_acl_groups=["ACL_GROUP-RDPU", "ACL_GROUP-00"]
 email_server1_postfix="@company.ru"
 email_server2_postfix="@domain2.company.ru"
 
+db_email_server1_host="email1.server"
+db_email_server1_name="email1.server"
+db_email_server1_user="email1_db_user"
+db_email_server1_passwd="email1_db_passwd"
+
+db_email_server2_host="email2.server"
+db_email_server2_name="email2.server"
+db_email_server2_user="email2_db_user"
+db_email_server2_passwd="email2_db_passwd"
+
 #DEBUG=True
 DEBUG=False
 log="/var/log/add_user_to_ad.log"
