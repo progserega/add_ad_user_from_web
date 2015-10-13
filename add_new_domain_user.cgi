@@ -24,7 +24,7 @@ DONT_EXPIRE_PASSWORD = 65536
 TRUSTED_FOR_DELEGATION = 524288
 PASSWORD_EXPIRED = 8388608
 
-def create_drsk_user(user_familia,user_name,user_otchestvo,description, user):
+def create_drsk_user(user_familia,user_name,user_otchestvo,description, company, user):
 	fam=user_familia
 	name=user_name
 	otch=user_otchestvo
@@ -54,12 +54,12 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, user):
 	user["email_server1"]=email_server1
 	user["email_server2"]=email_server2
 	user["description"]=description
-	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
+	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), company.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
 		return False
 	return True
 
 
-def CreateADUser(username, password, name, familiya, otchestvo, description, acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base):
+def CreateADUser(username, password, name, familiya, otchestvo, description, company, acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base):
 	"""
 	Create a new user account in Active Directory.
 	"""
@@ -116,8 +116,10 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, acl
 	user_attrs['givenName'] = fname
 	user_attrs['sn'] = lname
 	user_attrs['displayName'] = familiya + ' ' + name + ' ' + otchestvo
-	#user_attrs['canonicalName'] = familiya + ' ' + name + ' ' + otchestvo
+	# Наименование в списке просмотра пользователей через виндовый интерфейс:
+	user_attrs['Name'] = familiya + ' ' + name + ' ' + otchestvo
 	user_attrs['description'] = description
+	user_attrs['company'] = company
 	#user_attrs['userAccountControl'] = '514'
 	user_attrs['userAccountControl'] = "%d" % (NORMAL_ACCOUNT + DONT_EXPIRE_PASSWORD + ACCOUNTDISABLE)
 	#user_attrs['mail'] = username + '@host.com'
@@ -301,6 +303,7 @@ if conf.DEBUG:
 	user_otchestvo = u"Отчество"
 	user_description = u"(А - для сортировки) описание"
 	user_addr="DEBUG - empty"
+	ou_name = u"ues"
 else:
 	form = cgi.FieldStorage()
 
@@ -328,11 +331,17 @@ else:
 		print("Необходимо заполнить все поля")
 		print("</body></html>")
 		sys.exit(1)
+	ou_name = u"%s" % cgi.escape(form['ou_name'].value.decode('utf8'))
 log.add("try create user: %s, %s, %s, %s" % (user_familia, user_name, user_otchestvo, user_description) )
 
 # Обрабатываем ФИО - добавляем пользователя и выводим на экран результат:
 user={}
-if create_drsk_user(user_familia,user_name,user_otchestvo,user_description,user) is False:
+
+if ou_name not in conf.ou:
+	log.add("ERROR configuring - selected ou_name not in ou in config. selected ou_name val='%s'" % ou_name )
+	sys.exit(1)
+
+if create_drsk_user(user_familia,user_name,user_otchestvo,user_description,conf.ou[ou_name],user) is False:
 	log.add("ERROR create user: %s, %s, %s, %s" % (user_familia, user_name, user_otchestvo, user_description) )
 	print("Внутренняя ошибка!")
 	print("</body></html>")
