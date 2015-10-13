@@ -303,7 +303,7 @@ if conf.DEBUG:
 	user_otchestvo = u"Отчество"
 	user_description = u"(А - для сортировки) описание"
 	user_addr="DEBUG - empty"
-	ou_name = u"ues"
+	ou_name = u"filial1"
 else:
 	form = cgi.FieldStorage()
 
