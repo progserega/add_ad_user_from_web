@@ -26,6 +26,9 @@ TRUSTED_FOR_DELEGATION = 524288
 PASSWORD_EXPIRED = 8388608
 
 def create_drsk_user(user_familia,user_name,user_otchestvo,description, company, user):
+	num_op=0
+	num_success_op=0
+
 	fam=user_familia
 	name=user_name
 	otch=user_otchestvo
@@ -55,10 +58,16 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	user["email_server1"]=email_server1
 	user["email_server2"]=email_server2
 	user["description"]=description
+	num_op+=1
 	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), company.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
-		return False
-	# Добавляем в почтовые сервера:
-	
+		print("""<p>ОШИБКА заведения учётной записи '%s' в домене</p>""" % login) 
+		log.add("""ERROR - ошибка заведения учётной записи '%s' в домене""" % login) 
+	else
+		num_success_op+=1
+		print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
+		log.add("""SUCCESS - успешно заведенна учётная запись '%s' в домене""" % login) 
+
+	#=============================  Добавляем в почтовые сервера: ========================
 	create_email=False
 	try:
 		if conf.db_email_server1_passwd is not None:
@@ -66,14 +75,15 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	except:
 		log.add("NOTICE: conf.db_email_server1_passwd is not defined - skip add email to server1")
 	if create_email:
+		num_op+=1
 		if email_db.add_user_to_exim_db(db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=conf.email_server1_domain, email_passwd=passwd, email_descr=fio) == False:
 			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 			return False
 		else:
-			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
+			log.add("SUCCESS add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
-	
+			num_success_op+=1
 
 	create_email=False
 	try:
@@ -83,15 +93,66 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		log.add("NOTICE: conf.db_email_server2_passwd is not defined - skip add email to server2")
 
 	if create_email:
+		num_op+=1
 		if email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=passwd, email_descr=fio) == False:
 			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
-			return False
 		else:
-			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
+			log.add("SUCCESS add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
+			num_success_op+=1
 
-	return True
+	#======================= Добавляем пользователя в базу: ====================
+	num_op+=1
+	if ad_user_db.add_ad_user(\
+			name=user["name"], \
+			familiya=user["familiya"],\
+			otchestvo=user["otchestvo"], \
+			login=user["login"],\
+			old_login="",\
+			passwd=user["passwd"], \
+			drsk_email=user["email_server1"],\
+			drsk_email_passwd=user["passwd"],\
+			rsprim_email=user["email_server2"],\
+			rsprim_email_passwd=user["passwd"],\
+			hostname="",\
+			ip="",\
+			os="",\
+			os_version="",\
+			patches="",\
+			doljnost=user["description"],\
+			add_user_name=web_user_name,\
+			add_ip=web_user_addr) is False:
+		print("""<p>ОШИБКА добавления запись о пользователе в базу данных (postgres) пользователей- обратитесь к системному администратору</p>""" % user["login"])
+		log.add("""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"])
+	else:
+		print("""<p>УСПЕШНО добавили пользователя '%s' в базу пользователей</p>""" % user["login"])
+		log.add("""SUCCESS - добавили пользователя '%s' в базу пользователей""" %  user["login"])
+		num_success_op+=1
+
+	
+	#========================  Сообщаем в лог полную информацию: =======================
+	log.add("SUCCESS create user: (%(user_familia)s, %(user_name)s, %(user_otchestvo)s, %(user_description)s),\
+login: %(login)s, passwd: '%(passwd)s', email_server1: %(email_server1)s, email_server2: %(email_server2)s, успешно выполненно задач: %(num_op)d из %(num_success_op)d"
+		% {
+		"user_familia":user_familia,
+		"user_name":user_name,
+		"user_otchestvo":user_otchestvo,
+		"user_description":user_description,
+		"login":user["login"],
+		"passwd":user["passwd"],
+		"email_server1":user["email_server1"],
+		"email_server2":user["email_server2"],
+		"num_op":num_op,
+		"num_success_op":num_success_op
+		})
+	user["num_op"]=num_op
+	user["num_success_op"]=num_success_op
+
+	if num_success_op==0:
+		return False
+	else:
+		return True
 
 
 def CreateADUser(username, password, name, familiya, otchestvo, description, company, acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base):
@@ -383,6 +444,8 @@ if create_drsk_user(user_familia,user_name,user_otchestvo,user_description,conf.
 	sys.exit(1)
 else:
 	# Всё хорошо, печатаем результат:
+	print("""<h1>Результат:</h1>""")
+	print("""<p>Выполнено %d из %d задач</p>""" % (user["num_op"], user["num_success_op"]))
 	print("""<h2>Успешно создан пользователь:</h2>""")
 	print("""<h2>Имя:</h2>
 	<p>%s</p>""" % user["fio"].encode('utf8'))
@@ -397,37 +460,5 @@ else:
 	print("""<h2>Почтовый ящик2:</h2>
 	<p>%s</p>""" % user["email_server2"].encode('utf8'))
 	print("</body></html>")
-	log.add("SUCCESS create user: (%(user_familia)s, %(user_name)s, %(user_otchestvo)s, %(user_description)s),\
- login: %(login)s, passwd: '%(passwd)s', email_server1: %(email_server1)s, email_server2: %(email_server2)s"
-		% {
-		"user_familia":user_familia,
-		"user_name":user_name,
-		"user_otchestvo":user_otchestvo,
-		"user_description":user_description,
-		"login":user["login"],
-		"passwd":user["passwd"],
-		"email_server1":user["email_server1"],
-		"email_server2":user["email_server2"]
-		})
-	# Добавляем пользователя в базу:
-	if ad_user_db.add_ad_user(\
-			name=user["name"], \
-			familiya=user["familiya"],\
-			otchestvo=user["otchestvo"], \
-			login=user["login"],\
-			old_login="",\
-			passwd=user["passwd"], \
-			drsk_email=user["email_server1"],\
-			drsk_email_passwd=user["passwd"],\
-			rsprim_email=user["email_server2"],\
-			rsprim_email_passwd=user["passwd"],\
-			hostname="",\
-			ip="",\
-			os="",\
-			os_version="",\
-			patches="",\
-			doljnost=user["description"],\
-			add_user_name=web_user_name,\
-			add_ip=web_user_addr) is False:
-		sys.exit(1)
+
 	sys.exit(0)
