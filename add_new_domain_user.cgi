@@ -66,7 +66,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	status=CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), company.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base)
 	if status == STATUS_SUCCESS:
 		num_success_op+=1
-		print("""<p>УСПЕШНО заведён пользователь %s в домене""" % login)
+		print(u"""<p>УСПЕШНО заведён пользователь %s в домене""" % login.encode('utf8'))
 		log.add(u"""SUCCESS - успешно заведенна учётная запись '%s' в домене""" % login) 
 	elif status == STATUS_USER_EXIST:
 		print("""<p>ОШИБКА заведения учётной записи '%s' в домене - пользователь УЖЕ СУЩЕСТВУЕТ</p>""" % login) 
@@ -141,15 +141,15 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 				add_user_name=web_user_name,\
 				add_ip=web_user_addr)
 		if status == STATUS_SUCCESS:
-			print("""<p>УСПЕШНО добавили пользователя '%s' в базу пользователей</p>""" % user["login"])
-			log.add(u"""SUCCESS - добавили пользователя '%s' в базу пользователей""" %  user["login"])
+			print(u"""<p>УСПЕШНО добавили пользователя '%s' в базу пользователей</p>""" % user["login"].encode('utf8'))
+			log.add(u"""SUCCESS - добавили пользователя '%s' в базу пользователей""" %  user["login"].encode('utf8'))
 			num_success_op+=1
 		elif status == STATUS_USER_EXIST:
-			print("""<p>ОШИБКА добавления записи о пользователе в базу данных (postgres) пользователей - ПОЛЬЗОВАЕЛЬ с таким ящиком rsprim.ru (%s) УЖЕ СУЩЕСТВУЕТ</p>""" % user["email_server2"])
-			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"])
+			print(u"""<p>ОШИБКА добавления записи о пользователе в базу данных (postgres) пользователей - ПОЛЬЗОВАЕЛЬ с таким ящиком rsprim.ru (%s) УЖЕ СУЩЕСТВУЕТ</p>""" % user["email_server2"])
+			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"].encode('utf8'))
 		else:
-			print("""<p>ОШИБКА добавления записи о пользователе в базу данных (postgres) пользователей - обратитесь к системному администратору</p>""" % user["login"])
-			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"])
+			print(u"""<p>ОШИБКА добавления записи о пользователе в базу данных (postgres) пользователей - обратитесь к системному администратору</p>""" % user["login"].encode('utf8'))
+			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"].encode('utf8'))
 
 	user["num_op"]=num_op
 	user["num_success_op"]=num_success_op
