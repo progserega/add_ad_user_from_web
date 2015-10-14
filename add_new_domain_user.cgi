@@ -32,8 +32,8 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	fio=fam + " " + name + " " + otch
 	login=rus2en(fam.lower()) + "_" + rus2en(name.lower())[0] + rus2en(otch.lower())[0]  
 	email_prefix=rus2en(fam.lower()) + "-" + rus2en(name.lower())[0] + rus2en(otch.lower())[0]  
-	email_server1=email_prefix+conf.email_server1_postfix
-	email_server2=email_prefix+conf.email_server2_postfix
+	email_server1=email_prefix+"@"+conf.email_server1_domain
+	email_server2=email_prefix+"@"+conf.email_server2_domain
 	passwd=get_passwd()
 
 	if conf.DEBUG:
@@ -66,13 +66,13 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	except:
 		log.add("NOTICE: conf.db_email_server1_passwd is not defined - skip add email to server1")
 	if create_email:
-		if email_db.add_user_to_exim_db(db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=email_domain, email_passwd=password, email_descr=fio) == False:
-			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,email_domain)))
-			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server1_host))
+		if email_db.add_user_to_exim_db(db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=conf.email_server1_domain, email_passwd=password, email_descr=fio) == False:
+			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
+			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 			return False
 		else:
-			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,email_domain)))
-			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server1_host))
+			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
+			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 	
 
 	create_email=False
@@ -83,13 +83,13 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		log.add("NOTICE: conf.db_email_server2_passwd is not defined - skip add email to server2")
 
 	if create_email:
-		if email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=email_domain, email_passwd=password, email_descr=fio) == False:
-			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,email_domain)))
-			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server2_host))
+		if email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=password, email_descr=fio) == False:
+			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
+			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
 			return False
 		else:
-			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,email_domain)))
-			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server2_host))
+			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
+			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
 
 	return True
 

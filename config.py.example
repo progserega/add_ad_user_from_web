@@ -11,8 +11,8 @@ base_comp_dn="OU=340,OU=Comps,OU=Domain Root Entry,DC=company,DC=ru"
 group_acl_base="OU=340,OU=ACLG,OU=Groups,OU=Domain Root Entry,DC=company,DC=ru"
 default_acl_groups=["ACL_GROUP-RDPU", "ACL_GROUP-00"]
 
-email_server1_postfix="@company.ru"
-email_server2_postfix="@domain2.company.ru"
+email_server1_domain="company.ru"
+email_server2_domain="domain2.company.ru"
 
 db_email_server1_host="email1.server"
 db_email_server1_name="email1.server"
