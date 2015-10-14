@@ -52,6 +52,6 @@ def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, emai
 		log.add("ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
 		return False
 	
-	log.add(" success add email account to: %s@%s" % email_prefix + "@" + email_domain)
+	log.add(" success add email account to: %s@%s" % (email_prefix, email_domain))
 	return True
 		
