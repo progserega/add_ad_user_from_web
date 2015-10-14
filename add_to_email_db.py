@@ -31,7 +31,7 @@ def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, emai
 		if conf.DEBUG:
 			log.add("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql)
 		cur.execute(sql)
-		result con.fetchall()
+		result=cur.fetchall()
 	except mdb.Error, e:
 		log.add("ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
 		return STATUS_INTERNAL_ERROR
