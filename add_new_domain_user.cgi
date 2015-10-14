@@ -62,7 +62,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), company.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
 		print("""<p>ОШИБКА заведения учётной записи '%s' в домене</p>""" % login) 
 		log.add("""ERROR - ошибка заведения учётной записи '%s' в домене""" % login) 
-	else
+	else:
 		num_success_op+=1
 		print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 		log.add("""SUCCESS - успешно заведенна учётная запись '%s' в домене""" % login) 
