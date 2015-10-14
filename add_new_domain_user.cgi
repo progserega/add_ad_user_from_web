@@ -130,9 +130,12 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		log.add("""SUCCESS - добавили пользователя '%s' в базу пользователей""" %  user["login"])
 		num_success_op+=1
 
+	user["num_op"]=num_op
+	user["num_success_op"]=num_success_op
 	
 	#========================  Сообщаем в лог полную информацию: =======================
-	log.add("SUCCESS create user: (%(user_familia)s, %(user_name)s, %(user_otchestvo)s, %(user_description)s),\
+	if num_success_op!=0:
+		log.add("SUCCESS create user: (%(user_familia)s, %(user_name)s, %(user_otchestvo)s, %(user_description)s),\
 login: %(login)s, passwd: '%(passwd)s', email_server1: %(email_server1)s, email_server2: %(email_server2)s, успешно выполненно задач: %(num_op)d из %(num_success_op)d"
 		% {
 		"user_familia":user_familia,
@@ -146,8 +149,8 @@ login: %(login)s, passwd: '%(passwd)s', email_server1: %(email_server1)s, email_
 		"num_op":num_op,
 		"num_success_op":num_success_op
 		})
-	user["num_op"]=num_op
-	user["num_success_op"]=num_success_op
+	else:
+		log.add("""Нет успешно выполненных операций при заведении пользователя '%s'""" %  user["login"])
 
 	if num_success_op==0:
 		return False
