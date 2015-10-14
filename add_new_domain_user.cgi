@@ -68,7 +68,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		num_success_op+=1
 		print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 		log.add(u"""SUCCESS - успешно заведенна учётная запись '%s' в домене""" % login) 
-	else if status == STATUS_USER_EXIST:
+	elif status == STATUS_USER_EXIST:
 		print("""<p>ОШИБКА заведения учётной записи '%s' в домене - пользователь УЖЕ СУЩЕСТВУЕТ</p>""" % login) 
 		log.add(u"""ERROR USER EXIST - ошибка заведения учётной записи '%s' в домене - пользователь УЖЕ СУЩЕСТВУЕТ""" % login) 
 	else:
@@ -89,7 +89,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 			num_success_op+=1
-		else if status == STATUS_USER_EXIST:
+		elif status == STATUS_USER_EXIST:
 			log.add(u"ERROR USER EXIST  - add email to server: %s, %s failed - mailbox exist!" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 		else:
@@ -110,7 +110,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
 			num_success_op+=1
-		else if status == STATUS_USER_EXIST:
+		elif status == STATUS_USER_EXIST:
 			log.add(u"ERROR USER EXIST  - add email to server: %s, %s failed - mailbox exist!" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
 		else:
