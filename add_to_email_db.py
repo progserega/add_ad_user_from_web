@@ -37,7 +37,7 @@ def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, emai
 		return STATUS_INTERNAL_ERROR
 	if len(result) > 0:
 		# Уже есть такой аккаунт:
-		return USER_EXIST
+		return STATUS_USER_EXIST
 
 	# Добавляем ящик:
 	try:
