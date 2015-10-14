@@ -59,7 +59,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		return False
 	# Добавляем в почтовые сервера:
 
-	if db_email_server1_passwd is Defined:
+	if conf.db_email_server1_passwd is Defined:
 		if email_db.add_user_to_exim_db(db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=email_domain, email_passwd=password, email_descr=fio) == False:
 			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,email_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server1_host))
@@ -68,7 +68,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,email_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server1_host))
 
-	if db_email_server2_passwd is Defined:
+	if conf.db_email_server2_passwd is Defined:
 		if email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=email_domain, email_passwd=password, email_descr=fio) == False:
 			log.add("ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,email_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,email_domain,conf.db_email_server2_host))
