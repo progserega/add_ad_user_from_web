@@ -121,7 +121,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	# добавляем, только если хоть что-то получилось на предыдущем этапе:
 	if num_success_op!=0:
 		num_op+=1
-		if ad_user_db.add_ad_user(\
+		status = ad_user_db.add_ad_user(\
 				name=user["name"], \
 				familiya=user["familiya"],\
 				otchestvo=user["otchestvo"], \
@@ -139,13 +139,17 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 				patches="",\
 				doljnost=user["description"],\
 				add_user_name=web_user_name,\
-				add_ip=web_user_addr) is False:
-			print("""<p>ОШИБКА добавления запись о пользователе в базу данных (postgres) пользователей- обратитесь к системному администратору</p>""" % user["login"])
-			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"])
-		else:
+				add_ip=web_user_addr)
+		if status == STATUS_SUCCESS:
 			print("""<p>УСПЕШНО добавили пользователя '%s' в базу пользователей</p>""" % user["login"])
 			log.add(u"""SUCCESS - добавили пользователя '%s' в базу пользователей""" %  user["login"])
 			num_success_op+=1
+		elif status == STATUS_USER_EXIST:
+			print("""<p>ОШИБКА добавления записи о пользователе в базу данных (postgres) пользователей - ПОЛЬЗОВАЕЛЬ с таким ящиком rsprim.ru (%s) УЖЕ СУЩЕСТВУЕТ</p>""" % user["email_server2"])
+			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"])
+		else:
+			print("""<p>ОШИБКА добавления записи о пользователе в базу данных (postgres) пользователей - обратитесь к системному администратору</p>""" % user["login"])
+			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"])
 
 	user["num_op"]=num_op
 	user["num_success_op"]=num_success_op
