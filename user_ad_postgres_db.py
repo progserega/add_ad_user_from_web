@@ -8,6 +8,10 @@ import psycopg2.extras
 import config as config
 import logger as log
 
+STATUS_SUCCESS=0
+STATUS_INTERNAL_ERROR=1
+STATUS_USER_EXIST=2
+
 def get_ad_user_list_by_fio():
 	try:
 		if config.DEBUG:
