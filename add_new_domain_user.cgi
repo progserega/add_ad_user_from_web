@@ -25,6 +25,10 @@ DONT_EXPIRE_PASSWORD = 65536
 TRUSTED_FOR_DELEGATION = 524288
 PASSWORD_EXPIRED = 8388608
 
+STATUS_SUCCESS=0
+STATUS_INTERNAL_ERROR=1
+STATUS_USER_EXIST=2
+
 def create_drsk_user(user_familia,user_name,user_otchestvo,description, company, user):
 	num_op=0
 	num_success_op=0
@@ -59,13 +63,17 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	user["email_server2"]=email_server2
 	user["description"]=description
 	num_op+=1
-	if CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), company.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base) is False:
-		print("""<p>ОШИБКА заведения учётной записи '%s' в домене</p>""" % login) 
-		log.add(u"""ERROR - ошибка заведения учётной записи '%s' в домене""" % login) 
-	else:
+	status=CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), company.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base)
+	if status == STATUS_SUCCESS:
 		num_success_op+=1
 		print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 		log.add(u"""SUCCESS - успешно заведенна учётная запись '%s' в домене""" % login) 
+	else if status == STATUS_USER_EXIST:
+		print("""<p>ОШИБКА заведения учётной записи '%s' в домене - пользователь УЖЕ СУЩЕСТВУЕТ</p>""" % login) 
+		log.add(u"""ERROR USER EXIST - ошибка заведения учётной записи '%s' в домене - пользователь УЖЕ СУЩЕСТВУЕТ""" % login) 
+	else:
+		print("""<p>ОШИБКА заведения учётной записи '%s' в домене</p>""" % login) 
+		log.add(u"""ERROR - ошибка заведения учётной записи '%s' в домене""" % login) 
 
 	#=============================  Добавляем в почтовые сервера: ========================
 	create_email=False
@@ -76,14 +84,17 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		log.add(u"NOTICE: conf.db_email_server1_passwd is not defined - skip add email to server1")
 	if create_email:
 		num_op+=1
-		if email_db.add_user_to_exim_db(db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=conf.email_server1_domain, email_passwd=passwd, email_descr=fio) == False:
-			log.add(u"ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
-			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
-			return False
-		else:
+		status=email_db.add_user_to_exim_db(db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=conf.email_server1_domain, email_passwd=passwd, email_descr=fio)
+		if status == STATUS_SUCCESS:
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 			num_success_op+=1
+		else if status == STATUS_USER_EXIST:
+			log.add(u"ERROR USER EXIST  - add email to server: %s, %s failed - mailbox exist!" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
+			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
+		else:
+			log.add(u"ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
+			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 
 	create_email=False
 	try:
@@ -94,13 +105,17 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 
 	if create_email:
 		num_op+=1
-		if email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=passwd, email_descr=fio) == False:
-			log.add(u"ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
-			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
-		else:
+		status=email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=passwd, email_descr=fio)
+		if status == STATUS_SUCCESS:
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
 			num_success_op+=1
+		else if status == STATUS_USER_EXIST:
+			log.add(u"ERROR USER EXIST  - add email to server: %s, %s failed - mailbox exist!" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
+			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
+		else:
+			log.add(u"ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
+			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
 
 	#======================= Добавляем пользователя в базу: ====================
 	# добавляем, только если хоть что-то получилось на предыдущем этапе:
@@ -186,7 +201,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 		ldap_connection.simple_bind_s(conf.BIND_DN, conf.BIND_PASS)
 	except ldap.LDAPError, error_message:
 		log.add(u"Error connecting to LDAP server: %s" % error_message)
-		return False
+		return STATUS_INTERNAL_ERROR
 
 	# Check and see if user exists
 	try:
@@ -197,14 +212,14 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 			['distinguishedName'])
 	except ldap.LDAPError, error_message:
 		log.add(u"Error finding username: %s" % error_message)
-		return False
+		return STATUS_INTERNAL_ERROR
 
 	# Check the results
 	if len(user_results) != 0:
 		log.add(u"User %s already exists in AD:" % username )
-		print "User", username, "already exists in AD:", \
+#print "User", username, "already exists in AD:", \
 		user_results[0][1]['distinguishedName'][0]
-		return False
+		return STATUS_USER_EXIST
 
 	# Lets build our user: Disabled to start (514)
 	user_dn = 'cn=' + fname + ' ' + lname + ',' + base_dn
@@ -250,21 +265,21 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 		ldap_connection.add_s(user_dn, user_ldif)
 	except ldap.LDAPError, error_message:
 		log.add(u"Error adding new user: %s" % error_message)
-		return False
+		return STATUS_INTERNAL_ERROR
 
 	# Add the password
 	try:
 		ldap_connection.modify_s(user_dn, add_pass)
 	except ldap.LDAPError, error_message:
 		log.add(u"Error setting password: %s" % error_message)
-		return False
+		return STATUS_INTERNAL_ERROR
 
 	# Change the account back to enabled
 	try:
 		ldap_connection.modify_s(user_dn, mod_acct)
 	except ldap.LDAPError, error_message:
 		log.add(u"Error enabling user: %s" % error_message)
-		return False
+		return STATUS_INTERNAL_ERROR
 
 	# Add user to their primary group
 	for acl_group in acl_groups:
@@ -273,7 +288,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 			ldap_connection.modify_s(GROUP_DN, add_member)
 		except ldap.LDAPError, error_message:
 			log.add(u"Error adding user to group: %s" % error_message)
-			return False
+			return STATUS_INTERNAL_ERROR
 
 	# Modify user's primary group ID
 	#try:
@@ -300,7 +315,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 	#os.system('chmod 0701 /home/' + username)
 
 	# All is good
-	return True
+	return STATUS_SUCCESS
 
 def get_passwd():
 	t = subprocess.Popen(("pwgen","-s" ,"8", "1"), stderr=subprocess.PIPE,stdout=subprocess.PIPE)

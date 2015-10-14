@@ -8,13 +8,36 @@ import os
 import config as conf
 import logger as log
 
+STATUS_SUCCESS=0
+STATUS_INTERNAL_ERROR=1
+STATUS_USER_EXIST=2
+
+
 def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, email_domain, email_passwd, email_descr):
 	try:
 		con = mdb.connect(db_host, db_user, db_passwd, db_name);
 		cur = con.cursor()
 	except mdb.Error, e:
 		log.add("ERROR mysql connect: %d: %s" % (e.args[0],e.args[1]))
-		return False
+		return STATUS_INTERNAL_ERROR
+
+	# Проверяем, есть ли уже такой:
+	result=[]
+	try:
+		sql="""select username from mailbox where username='%(username)s'""" \
+			 % {\
+				 "username":mdb.escape_string(email_prefix + "@" + email_domain) \
+			 }
+		if conf.DEBUG:
+			log.add("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql)
+		cur.execute(sql)
+		result con.fetchall()
+	except mdb.Error, e:
+		log.add("ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
+		return STATUS_INTERNAL_ERROR
+	if len(result) > 0:
+		# Уже есть такой аккаунт:
+		return USER_EXIST
 
 	# Добавляем ящик:
 	try:
@@ -34,7 +57,7 @@ def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, emai
 		con.commit()
 	except mdb.Error, e:
 		log.add("ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
-		return False
+		return STATUS_INTERNAL_ERROR
 
 	# В алиасы:
 	try:
@@ -50,8 +73,8 @@ def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, emai
 		con.commit()
 	except mdb.Error, e:
 		log.add("ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
-		return False
+		return STATUS_INTERNAL_ERROR
 	
 	log.add(" success add email account to: %s@%s" % (email_prefix, email_domain))
-	return True
+	return STATUS_SUCCESS
 		
