@@ -15,11 +15,11 @@ STATUS_USER_EXIST=2
 def get_ad_user_list_by_fio():
 	try:
 		if config.DEBUG:
-			log.add("connect to: dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
+			log.add("user_ad_postgres_db.py get_ad_user_list_by_fio() connect to: dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
 		conn = psycopg2.connect("dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
 		cur = conn.cursor()
-	except:
-		log.add("I am unable to connect to the database");return False
+	except psycopg2.Error as e:
+		log.add("user_ad_postgres_db.py get_ad_user_list_by_fio(): I am unable to connect to the database: %s" % e.pgerror);return False
 	try:
 		sql="""select
 			fio,
@@ -45,11 +45,11 @@ def get_ad_user_list_by_fio():
 		from ad_users
 		"""
 		if config.DEBUG:
-			log.add("sql=%s" % sql)
+			log.add("user_ad_postgres_db.py sql=%s" % sql)
 		cur.execute(sql)
 		data = cur.fetchall()
-	except:
-		log.add("I am unable select data from db");return False
+	except psycopg2.Error as e:
+		log.add("user_ad_postgres_db.py I am unable select data from db: %s" % e.pgerror);return False
 	user_list={}
 	for line in data:
 		user={}
@@ -79,11 +79,11 @@ def get_ad_user_list_by_fio():
 def get_ad_user_list_by_login():
 	try:
 		if config.DEBUG:
-			log.add("connect to: dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
+			log.add("user_ad_postgres_db.py connect to: dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
 		conn = psycopg2.connect("dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
 		cur = conn.cursor()
-	except:
-		log.add("I am unable to connect to the database");return False
+	except psycopg2.Error as e:
+		log.add("user_ad_postgres_db.py I am unable to connect to the database: %s" % e.pgerror);return False
 	try:
 		sql="""select
 			fio,
@@ -109,11 +109,11 @@ def get_ad_user_list_by_login():
 		from ad_users
 		"""
 		if config.DEBUG:
-			log.add("sql=%s" % sql)
+			log.add("user_ad_postgres_db.py sql=%s" % sql)
 		cur.execute(sql)
 		data = cur.fetchall()
-	except:
-		log.add("I am unable select data from db");return False
+	except psycopg2.Error as e:
+		log.add("user_ad_postgres_db.py I am unable select data from db: %s" % e.pgerror);return False
 	user_list={}
 	for line in data:
 		user={}
@@ -143,11 +143,11 @@ def get_ad_user_list_by_login():
 def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email, drsk_email_passwd, rsprim_email, rsprim_email_passwd, hostname, ip, os, os_version, patches, doljnost, add_ip, add_user_name):
 	try:
 		if config.DEBUG:
-			log.add("connect to: dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
+			log.add("user_ad_postgres_db.py connect to: dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
 		conn = psycopg2.connect("dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
 		cur = conn.cursor()
-	except:
-		log.add("I am unable to connect to the database");return False
+	except psycopg2.Error as e:
+		log.add("user_ad_postgres_db.py I am unable to connect to the database: %s" % e.pgerror);return False
 		
 	fio=familiya + " " + name + " " + otchestvo
 
@@ -159,11 +159,11 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 				 "rsprim_email":rsprim_email \
 			 }
 		if conf.DEBUG:
-			log.add("user_ad_postgres_db.py add_ad_user() exec sql: %s" % sql)
+			log.add("user_ad_postgres_db.py user_ad_postgres_db.py add_ad_user() exec sql: %s" % sql)
 		cur.execute(sql)
 		result=cur.fetchall()
 	except psycopg2.Error as e:
-		log.add("ERROR postgres select: %s" %  e.pgerror)
+		log.add("user_ad_postgres_db.py ERROR postgres select: %s" %  e.pgerror)
 		return STATUS_INTERNAL_ERROR
 	if len(result) > 0:
 		# Уже есть такой аккаунт:
@@ -236,9 +236,9 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 			"add_user_name":add_user_name\
 		}
 		if config.DEBUG:
-			log.add("sql=%s" % sql)
+			log.add("user_ad_postgres_db.py sql=%s" % sql)
 		cur.execute(sql)
 		conn.commit()
-	except:
-		log.add("I am unable insert data to db");return False
+	except psycopg2.Error as e:
+		log.add("user_ad_postgres_db.py I am unable insert data to db: %s" % e.pgerror);return False
 	return True
