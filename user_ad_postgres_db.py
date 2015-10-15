@@ -159,11 +159,11 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 				 "rsprim_email":rsprim_email \
 			 }
 		if conf.DEBUG:
-			log.add("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql)
+			log.add("user_ad_postgres_db.py add_ad_user() exec sql: %s" % sql)
 		cur.execute(sql)
 		result=cur.fetchall()
-	except:
-		log.add("ERROR postgres select")
+	except psycopg2.Error as e:
+		log.add("ERROR postgres select: %s" %  e.pgerror)
 		return STATUS_INTERNAL_ERROR
 	if len(result) > 0:
 		# Уже есть такой аккаунт:
