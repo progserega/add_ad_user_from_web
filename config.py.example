@@ -35,6 +35,9 @@ ou={}
 ou["filial1"]=u"Компания Филиал1"
 ou["filial2"]=u"Компания Филиал2"
 
+send_report_to=["admin1@company.ru", "admin2@company.ru"]
+send_report_from="admin@company.ru"
+
 #DEBUG=True
 DEBUG=False
 log="/var/log/add_user_to_ad.log"

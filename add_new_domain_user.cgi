@@ -14,6 +14,7 @@ import config as conf
 import logger as log
 import user_ad_postgres_db as ad_user_db
 import add_to_email_db as email_db
+import sendmail
 
 SCRIPT = 1
 ACCOUNTDISABLE = 2
@@ -150,7 +151,39 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		else:
 			print("""<p>ОШИБКА добавления записи о пользователе '%s' в базу данных (postgres) пользователей - обратитесь к системному администратору</p>""" % user["login"].encode('utf8'))
 			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"].encode('utf8'))
+	#===================== Отправляем по почте данные пользователя, но без пароля: =================
+	if num_success_op!=0:
+		text="""Добрый день! 
+		Письмо сгенерировано автоматически. 
+	Администратор %(admin)s завёл пользователя с IP-адрса: %(ip)s. 
+	Данные заведённого пользователя:
+	ФИО: %(fio)s
+	Логин: %(login)s
+	Основная почта: %(email1)s
+	Дополнительная почта: %(email2)s
 
+	Спасибо за внимание!
+		""" % \
+		{\
+		"admin":add_user_name,\
+			"ip":web_user_addr,\
+			"fio":user["fio"],\
+			"login":user["login"],\
+			"email1":email_server1,\
+			"email2":email_server2\
+		}
+		subj="Создан новый пользователь '%s' в системе" % user["login"]
+		for send_to in conf.send_report_to:
+			num_op+=1
+			if sendmail.sendmail(text=text, subj=subj,send_to=send_to,conf.send_from,isTls=False) == True:
+				num_success_op+=1
+				print("""<p>УСПЕШНО отправил уведомление по почте пользователю: %s</p>""" % send_to)
+				log.add(u"""SUCCESS - успешно отправил уведомление пользователю: '%s'""" % send_to)
+			else:
+				print("""<p>ОШИБКА отправки уведомления по почте на %s</p>""" % send_to)
+				log.add(u"""ERROR - ошибка отправки уведомления пользователю: '%s'""" % send_to)
+				
+	#=======================================================================
 	user["num_op"]=num_op
 	user["num_success_op"]=num_success_op
 	
