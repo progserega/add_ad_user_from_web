@@ -14,7 +14,7 @@ import config as conf
 import logger as log
 import user_ad_postgres_db as ad_user_db
 import add_to_email_db as email_db
-import sendmail
+import sendemail
 
 SCRIPT = 1
 ACCOUNTDISABLE = 2
