@@ -5,7 +5,7 @@ import sys
 import os
 import psycopg2
 import psycopg2.extras
-import config as conf
+import config as config
 import logger as log
 
 STATUS_SUCCESS=0
@@ -158,7 +158,7 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 			 % {\
 				 "rsprim_email":rsprim_email \
 			 }
-		if conf.DEBUG:
+		if config.DEBUG:
 			log.add("user_ad_postgres_db.py user_ad_postgres_db.py add_ad_user() exec sql: %s" % sql)
 		cur.execute(sql)
 		result=cur.fetchall()
