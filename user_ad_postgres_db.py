@@ -5,7 +5,7 @@ import sys
 import os
 import psycopg2
 import psycopg2.extras
-import config as config
+import config as conf
 import logger as log
 
 STATUS_SUCCESS=0
