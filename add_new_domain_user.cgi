@@ -190,8 +190,10 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 			"email2":email_server2\
 		}
 		# Статусы выполненных действий:
+		index=1
 		for name in full_status:
-			text=text + name + ": " + full_status[name] + "\n"
+			text=text + index +") " + name + ": " + full_status[name] + "\n"
+			index+=1
 		text=text + "\nСпасибо за внимание!"
 
 		subj="'%s' создал нового пользователя '%s' в системе" % (web_user_name,user["login"])
