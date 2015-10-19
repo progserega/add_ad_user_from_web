@@ -175,7 +175,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		subj="Создан новый пользователь '%s' в системе" % user["login"]
 		for send_to in conf.send_report_to:
 			num_op+=1
-			if sendemail.sendmail(text=text, subj=subj,send_to=send_to,send_from=conf.send_from,isTls=False) == True:
+			if sendemail.sendmail(text=text, subj=subj,send_to=send_to,send_from=conf.send_report_from,isTls=False) == True:
 				num_success_op+=1
 				print("""<p>УСПЕШНО отправил уведомление по почте пользователю: %s</p>""" % send_to)
 				log.add(u"""SUCCESS - успешно отправил уведомление пользователю: '%s'""" % send_to)
