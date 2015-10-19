@@ -93,15 +93,15 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 			num_success_op+=1
-			full_status["заведение почты на основном сервере"]="успешно"
+			full_status["заведение почты на основном (prim.drsk.ru) сервере"]="успешно"
 		elif status == STATUS_USER_EXIST:
 			log.add(u"ERROR USER EXIST  - add email to server: %s, %s failed - mailbox exist!" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
-			full_status["заведение почты на основном сервере"]="ошибка - такой пользователь уже существует"
+			full_status["заведение почты на основном (prim.drsk.ru) сервере"]="ошибка - такой пользователь уже существует"
 		else:
 			log.add(u"ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
-			full_status["заведение почты на основном сервере"]="ошибка - внутренняя ошибка скрипта"
+			full_status["заведение почты на основном (prim.drsk.ru) сервере"]="ошибка - внутренняя ошибка скрипта"
 
 	create_email=False
 	try:
@@ -116,16 +116,16 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		if status == STATUS_SUCCESS:
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
-			full_status["заведение почты на резервном сервере"]="успешно"
+			full_status["заведение почты на резервном (rsprim.ru) сервере"]="успешно"
 			num_success_op+=1
 		elif status == STATUS_USER_EXIST:
 			log.add(u"ERROR USER EXIST  - add email to server: %s, %s failed - mailbox exist!" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
-			full_status["заведение почты на резервном сервере"]="ошибка - такой пользователь уже существует"
+			full_status["заведение почты на резервном (rsprim.ru) сервере"]="ошибка - такой пользователь уже существует"
 		else:
 			log.add(u"ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
-			full_status["заведение почты на резервном сервере"]="ошибка - внутренняя ошибка скрипта"
+			full_status["заведение почты на резервном (rsprim.ru) сервере"]="ошибка - внутренняя ошибка скрипта"
 
 	#======================= Добавляем пользователя в базу: ====================
 	# добавляем, только если хоть что-то получилось на предыдущем этапе:
