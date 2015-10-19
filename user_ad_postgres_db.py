@@ -147,7 +147,7 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 		conn = psycopg2.connect("dbname='" + config.user_list_db_name + "' user='" +config.user_list_db_user + "' host='" + config.user_list_db_host + "' password='" + config.user_list_db_passwd + "'")
 		cur = conn.cursor()
 	except psycopg2.Error as e:
-		log.add("user_ad_postgres_db.py I am unable to connect to the database: %s" % e.pgerror);return False
+		log.add("user_ad_postgres_db.py I am unable to connect to the database: %s" % e.pgerror);return STATUS_INTERNAL_ERROR
 		
 	fio=familiya + " " + name + " " + otchestvo
 
@@ -240,5 +240,5 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 		cur.execute(sql)
 		conn.commit()
 	except psycopg2.Error as e:
-		log.add("user_ad_postgres_db.py I am unable insert data to db: %s" % e.pgerror);return False
-	return True
+		log.add("user_ad_postgres_db.py I am unable insert data to db: %s" % e.pgerror);return STATUS_INTERNAL_ERROR
+	return STATUS_SUCCESS
