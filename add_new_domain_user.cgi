@@ -166,8 +166,11 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	#===================== Отправляем по почте данные пользователя, но без пароля: =================
 	if num_success_op!=0:
 		text="""Добрый день! 
-	Письмо сгенерировано автоматически. 
+
+Письмо сгенерировано автоматически. 
+
 Администратор с логином '%(admin)s' завёл пользователя с IP-адрса: %(ip)s. 
+
 Данные заведённого пользователя:
 ФИО: %(fio)s
 Логин: %(login)s
@@ -191,7 +194,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 			text=text + name + ": " + full_status[name] + "\n"
 		text=text + "\nСпасибо за внимание!"
 
-		subj="Создан новый пользователь '%s' в системе" % user["login"]
+		subj="'%s' создал нового пользователя '%s' в системе" % (web_user_name,user["login"])
 		for send_to in conf.send_report_to:
 			num_op+=1
 			if sendemail.sendmail(text=text, subj=subj,send_to=send_to,send_from=conf.send_report_from,isTls=False) == True:
