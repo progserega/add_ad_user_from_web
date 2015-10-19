@@ -175,7 +175,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 Дополнительная почта: %(email2)s
 
 Отчёт о проделанной работе:
-		""" % \
+""" % \
 		{\
 		"admin":web_user_name,\
 			"ip":web_user_addr,\
