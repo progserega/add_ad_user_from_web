@@ -171,6 +171,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 Данные заведённого пользователя:
 ФИО: %(fio)s
 Логин: %(login)s
+Описание пользователя: %(descr)s
 Основная почта: %(email1)s
 Дополнительная почта: %(email2)s
 
@@ -181,6 +182,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 			"ip":web_user_addr,\
 			"fio":user["fio"].encode('utf8'),\
 			"login":user["login"],\
+			"descr":user["description"].encode('utf8'),\
 			"email1":email_server1,\
 			"email2":email_server2\
 		}
