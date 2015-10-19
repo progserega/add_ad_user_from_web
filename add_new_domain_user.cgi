@@ -167,7 +167,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		{\
 		"admin":web_user_name,\
 			"ip":web_user_addr,\
-			"fio":user["fio"],\
+			"fio":user["fio"].encode('utf8'),\
 			"login":user["login"],\
 			"email1":email_server1,\
 			"email2":email_server2\
