@@ -192,7 +192,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		# Статусы выполненных действий:
 		index=1
 		for name in full_status:
-			text=text + index +") " + name + ": " + full_status[name] + "\n"
+			text=text + "%d"%index +") " + name + ": " + full_status[name] + "\n"
 			index+=1
 		text=text + "\nСпасибо за внимание!"
 
