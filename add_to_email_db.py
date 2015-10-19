@@ -15,7 +15,7 @@ STATUS_USER_EXIST=2
 
 def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, email_domain, email_passwd, email_descr):
 	try:
-		con = mdb.connect(host=db_host, user=db_user, password=db_passwd, db=db_name, charset='utf8', init_command='SET NAMES UTF8');
+		con = mdb.connect(host=db_host, user=db_user, passwd=db_passwd, db=db_name, charset='utf8', init_command='SET NAMES UTF8');
 		cur = con.cursor()
 	except mdb.Error, e:
 		log.add("ERROR mysql connect: %d: %s" % (e.args[0],e.args[1]))
