@@ -112,7 +112,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 
 	if create_email:
 		num_op+=1
-		status=email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=passwd, email_descr=fio)
+		status=email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=passwd, email_descr=fio.encode('utf8'))
 		if status == STATUS_SUCCESS:
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
