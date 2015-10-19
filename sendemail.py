@@ -9,7 +9,7 @@ from email.utils import COMMASPACE, formatdate
 from email import encoders
 import socket
 
-def sendmail2(text="произошёл инцедент. Необходимо участие админа.", subj="важное сообщение", send_to='abuse@rsprim.ru' , server='172.21.254.5', port=25, send_from='root@redmine.rs.int', username='', password='', isTls=True, files=[] ):
+def sendmail(text="произошёл инцедент. Необходимо участие админа.", subj="важное сообщение", send_to='abuse@rsprim.ru' , server='172.21.254.5', port=25, send_from='root@redmine.rs.int', username='', password='', isTls=True, files=[] ):
 	msg = MIMEMultipart()
 	msg['From'] = send_from
 	#msg['To'] = COMMASPACE.join(send_to)
@@ -38,7 +38,7 @@ def sendmail2(text="произошёл инцедент. Необходимо у
 		
 
 
-#if sendmail2(send_to="semenov@rsprim.ru") == False:
+#if sendmail(send_to="semenov@rsprim.ru") == False:
 #	print ("error")
 #else:
 #	print ("success")
