@@ -33,7 +33,7 @@ STATUS_USER_EXIST=2
 def create_drsk_user(user_familia,user_name,user_otchestvo,description, company, user):
 	num_op=0
 	num_success_op=0
-
+	full_status={}
 	fam=user_familia
 	name=user_name
 	otch=user_otchestvo
@@ -69,12 +69,15 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		num_success_op+=1
 		print("""<p>УСПЕШНО заведён пользователь %s в домене""" % login.encode('utf8'))
 		log.add(u"""SUCCESS - успешно заведенна учётная запись '%s' в домене""" % login) 
+		full_status["создание пользователя в домене"]="успешно"
 	elif status == STATUS_USER_EXIST:
 		print("""<p>ОШИБКА заведения учётной записи '%s' в домене - пользователь УЖЕ СУЩЕСТВУЕТ</p>""" % login) 
 		log.add(u"""ERROR USER EXIST - ошибка заведения учётной записи '%s' в домене - пользователь УЖЕ СУЩЕСТВУЕТ""" % login) 
+		full_status["создание пользователя в домене"]="ошибка - этот пользователь в домене уже существует"
 	else:
 		print("""<p>ОШИБКА заведения учётной записи '%s' в домене</p>""" % login) 
 		log.add(u"""ERROR - ошибка заведения учётной записи '%s' в домене""" % login) 
+		full_status["создание пользователя в домене"]="ошибка - внутренняя ошибка скрипта при создании пользователя"
 
 	#=============================  Добавляем в почтовые сервера: ========================
 	create_email=False
@@ -90,12 +93,15 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 			num_success_op+=1
+			full_status["заведение почты на основном сервере"]="успешно"
 		elif status == STATUS_USER_EXIST:
 			log.add(u"ERROR USER EXIST  - add email to server: %s, %s failed - mailbox exist!" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
+			full_status["заведение почты на основном сервере"]="ошибка - такой пользователь уже существует"
 		else:
 			log.add(u"ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
+			full_status["заведение почты на основном сервере"]="ошибка - внутренняя ошибка скрипта"
 
 	create_email=False
 	try:
@@ -110,13 +116,16 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		if status == STATUS_SUCCESS:
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
+			full_status["заведение почты на резервном сервере"]="успешно"
 			num_success_op+=1
 		elif status == STATUS_USER_EXIST:
 			log.add(u"ERROR USER EXIST  - add email to server: %s, %s failed - mailbox exist!" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
+			full_status["заведение почты на резервном сервере"]="ошибка - такой пользователь уже существует"
 		else:
 			log.add(u"ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
 			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
+			full_status["заведение почты на резервном сервере"]="ошибка - внутренняя ошибка скрипта"
 
 	#======================= Добавляем пользователя в базу: ====================
 	# добавляем, только если хоть что-то получилось на предыдущем этапе:
@@ -144,25 +153,28 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 		if status == STATUS_SUCCESS:
 			print("""<p>УСПЕШНО добавили пользователя '%s' в базу пользователей</p>""" % user["login"].encode('utf8'))
 			log.add(u"""SUCCESS - добавили пользователя '%s' в базу пользователей""" %  user["login"].encode('utf8'))
+			full_status["добавление пользователя в базу пользователей"]="успешно"
 			num_success_op+=1
 		elif status == STATUS_USER_EXIST:
 			print("""<p>ОШИБКА добавления записи о пользователе в базу данных (postgres) пользователей - ПОЛЬЗОВАЕЛЬ с таким ящиком rsprim.ru (%s) УЖЕ СУЩЕСТВУЕТ</p>""" % user["email_server2"])
 			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"].encode('utf8'))
+			full_status["добавление пользователя в базу пользователей"]="ошибка - такой пользователь уже существует"
 		else:
 			print("""<p>ОШИБКА добавления записи о пользователе '%s' в базу данных (postgres) пользователей - обратитесь к системному администратору</p>""" % user["login"].encode('utf8'))
 			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"].encode('utf8'))
+			full_status["добавление пользователя в базу пользователей"]="ошибка - внутренняя ошибка скрипта"
 	#===================== Отправляем по почте данные пользователя, но без пароля: =================
 	if num_success_op!=0:
 		text="""Добрый день! 
-		Письмо сгенерировано автоматически. 
-	Администратор %(admin)s завёл пользователя с IP-адрса: %(ip)s. 
-	Данные заведённого пользователя:
-	ФИО: %(fio)s
-	Логин: %(login)s
-	Основная почта: %(email1)s
-	Дополнительная почта: %(email2)s
+	Письмо сгенерировано автоматически. 
+Администратор с логином '%(admin)s' завёл пользователя с IP-адрса: %(ip)s. 
+Данные заведённого пользователя:
+ФИО: %(fio)s
+Логин: %(login)s
+Основная почта: %(email1)s
+Дополнительная почта: %(email2)s
 
-	Спасибо за внимание!
+Отчёт о проделанной работе:
 		""" % \
 		{\
 		"admin":web_user_name,\
@@ -172,6 +184,11 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 			"email1":email_server1,\
 			"email2":email_server2\
 		}
+		# Статусы выполненных действий:
+		for name in full_status:
+			text=text + name + ": " + full_status[name] + "\n"
+		text=text + "\nСпасибо за внимание!"
+
 		subj="Создан новый пользователь '%s' в системе" % user["login"]
 		for send_to in conf.send_report_to:
 			num_op+=1
