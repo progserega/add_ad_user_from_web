@@ -165,7 +165,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	Спасибо за внимание!
 		""" % \
 		{\
-		"admin":add_user_name,\
+		"admin":web_user_name,\
 			"ip":web_user_addr,\
 			"fio":user["fio"],\
 			"login":user["login"],\
