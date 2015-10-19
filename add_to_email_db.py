@@ -45,7 +45,7 @@ def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, emai
 			 % {\
 				 "username":mdb.escape_string(email_prefix + "@" + email_domain), \
 				 "password":mdb.escape_string(email_passwd), \
-				 "name":mdb.escape_string(email_descr.encode('utf8')), \
+				 "name":mdb.escape_string(email_descr), \
 				 "maildir":mdb.escape_string(email_domain + "/" + email_prefix + "/"), \
 				 "quota":"0", \
 				 "local_part":mdb.escape_string(email_prefix), \
