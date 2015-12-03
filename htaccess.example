@@ -1,5 +1,5 @@
 Options FollowSymLinks ExecCGI
-DirectoryIndex index.html
+DirectoryIndex index.cgi
 
 <Files "config.py">
 Order Deny,Allow
