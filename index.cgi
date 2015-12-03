@@ -62,7 +62,7 @@ for uid in conf.default_acl_groups:
 <input type="radio" name="ou_name" value="%(id)s" %(checked)s> %(name)s<br>
 """ % {\
 	"id":uid,\
-	"name":conf.default_acl_groups[uid]["name"],\
+	"name":conf.default_acl_groups[uid]["name"].encode("utf8"),\
 	"checked":checked
 	})
 	checked=""
