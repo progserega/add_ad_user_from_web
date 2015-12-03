@@ -30,7 +30,7 @@ STATUS_SUCCESS=0
 STATUS_INTERNAL_ERROR=1
 STATUS_USER_EXIST=2
 
-def create_drsk_user(user_familia,user_name,user_otchestvo,description, company, user):
+def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name, user):
 	num_op=0
 	num_success_op=0
 	full_status={}
@@ -64,7 +64,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, company,
 	user["email_server2"]=email_server2
 	user["description"]=description
 	num_op+=1
-	status=CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), company.encode('utf8'), acl_groups=conf.default_acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base)
+	status=CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), conf.default_acl_groups[ou_name]["name"].encode('utf8'), acl_groups=conf.default_acl_groups[ou_name]["groups"],domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base)
 	if status == STATUS_SUCCESS:
 		num_success_op+=1
 		print("""<p>УСПЕШНО заведён пользователь %s в домене""" % login.encode('utf8'))
@@ -514,11 +514,7 @@ log.add(u"try create user: %s, %s, %s, %s" % (user_familia, user_name, user_otch
 # Обрабатываем ФИО - добавляем пользователя и выводим на экран результат:
 user={}
 
-if ou_name not in conf.ou:
-	log.add(u"ERROR configuring - selected ou_name not in ou in config. selected ou_name val='%s'" % ou_name )
-	sys.exit(1)
-
-if create_drsk_user(user_familia,user_name,user_otchestvo,user_description,conf.ou[ou_name],user) is False:
+if create_drsk_user(user_familia,user_name,user_otchestvo,user_description,ou_name,user) is False:
 	log.add(u"ERROR create user: %s, %s, %s, %s" % (user_familia, user_name, user_otchestvo, user_description) )
 	print("<h1>Внутренняя ошибка!</h1>")
 	print("</body></html>")

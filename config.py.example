@@ -11,6 +11,8 @@ base_comp_dn="OU=340,OU=Comps,OU=Domain Root Entry,DC=company,DC=ru"
 group_acl_base="OU=340,OU=ACLG,OU=Groups,OU=Domain Root Entry,DC=company,DC=ru"
 default_acl_groups=["ACL_GROUP-RDPU", "ACL_GROUP-00"]
 
+default_acl_groups={"filial":{"name":u"Филиал «Приморские ЭС», Аппарат управления","groups":["ACL_GROUP-RDPU", "ACL_GROUP-00"]},"ues":{"name":u"Филиал «Приморские ЭС», СП Южные ЭС","groups":["ACL_GROUP-RDPU", "ACL_GROUP-00"]}} 
+
 email_server1_domain="company.ru"
 email_server2_domain="domain2.company.ru"
 
@@ -29,11 +31,6 @@ user_list_db_name="users_ad_list_db"
 user_list_db_user="users_ad_list_user"
 user_list_db_passwd="secretpwd"
 
-
-# выбор филиала в виде radiobuttom:
-ou={}
-ou["filial1"]=u"Компания Филиал1"
-ou["filial2"]=u"Компания Филиал2"
 
 send_report_to=["admin1@company.ru", "admin2@company.ru"]
 send_report_from="admin@company.ru"
