@@ -295,7 +295,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 	user_attrs['sn'] = lname
 	user_attrs['displayName'] = familiya + ' ' + name + ' ' + otchestvo
 	# Наименование в списке просмотра пользователей через виндовый интерфейс:
-	user_attrs['Name'] = familiya + ' ' + name + ' ' + otchestvo
+	user_attrs['name'] = familiya + ' ' + name + ' ' + otchestvo
 	user_attrs['description'] = description
 	user_attrs['company'] = company
 	#user_attrs['userAccountControl'] = '514'
