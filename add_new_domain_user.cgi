@@ -287,8 +287,8 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 	user_attrs = {}
 	user_attrs['objectClass'] = \
 	['top', 'person', 'organizationalPerson', 'user']
-#user_attrs['cn'] = fname + ' ' + lname
-	user_attrs['cn'] = familiya + ' ' + name + ' ' + otchestvo
+	user_attrs['cn'] = fname + ' ' + lname
+#user_attrs['cn'] = familiya + ' ' + name + ' ' + otchestvo
 	user_attrs['userPrincipalName'] = username + '@' + domain
 	user_attrs['sAMAccountName'] = username
 	user_attrs['givenName'] = fname
