@@ -357,6 +357,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 		except ldap.LDAPError, error_message:
 			log.add(u"Error adding user to group: %s" % error_message)
 			return STATUS_INTERNAL_ERROR
+		log.add(u"SUCCESS adding user '%s' to group: '%s'" % (username,group) )
 
 	# Modify user's primary group ID
 	#try:
