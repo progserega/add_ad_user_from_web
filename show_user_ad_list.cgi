@@ -92,6 +92,7 @@ print("""
 index=1
 for account_name in users:
 	user=users[account_name]
+	fio=user["full_name"]
 	status=""
 	if user["attr"] & ad.ACCOUNTDISABLE:
 		status=status+"Заблокирован, "
@@ -141,6 +142,7 @@ for account_name in users:
 		add_user_name=users_from_db[account_name]["add_user_name"]
 		ip=users_from_db[account_name]["ip"]
 		hostname=users_from_db[account_name]["hostname"]
+		fio=users_from_db[account_name]["fio"]
 		users_from_db[account_name]["show"]=True
 
 	if description == "":
@@ -196,7 +198,7 @@ for account_name in users:
 		 <TD>%(add_user_name)s</TD>
 		 </TR>""" % {\
 		 "index":index, \
-		 "full_name":user["full_name"],\
+		 "full_name":fio,\
 		 "description":description,\
 		 "account_name":user["account_name"],\
 		 "status":html_status,\
