@@ -347,7 +347,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 	for group in groups:
 		if re.search("^rbl.*", group.lower()) is not None:
 			GROUP_DN="CN="+group+","+ group_rbl_base
-		else if re.search("^acl.*", group.lower()) is not None:
+		elif re.search("^acl.*", group.lower()) is not None:
 			GROUP_DN="CN="+group+","+ group_acl_base
 		else:
 			log.add(u"Error adding user to group: %s - group must begin from 'ACL' or 'RBL'! - skip this group" % group)
