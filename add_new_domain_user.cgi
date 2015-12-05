@@ -64,7 +64,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
 	user["email_server2"]=email_server2
 	user["description"]=description
 	num_op+=1
-	status=CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), conf.default_acl_groups[ou_name]["name"].encode('utf8'), acl_groups=conf.default_acl_groups[ou_name]["groups"],domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base)
+	status=CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), conf.default_groups[ou_name]["name"].encode('utf8'), groups=conf.default_groups[ou_name]["groups"],domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base)
 	if status == STATUS_SUCCESS:
 		num_success_op+=1
 		print("""<p>УСПЕШНО заведён пользователь %s в домене""" % login.encode('utf8'))
@@ -236,7 +236,7 @@ login: %(login)s, passwd: '%(passwd)s', email_server1: %(email_server1)s, email_
 		return True
 
 
-def CreateADUser(username, password, name, familiya, otchestvo, description, company, acl_groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base):
+def CreateADUser(username, password, name, familiya, otchestvo, description, company, groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base):
 	"""
 	Create a new user account in Active Directory.
 	"""
@@ -344,8 +344,14 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 		return STATUS_INTERNAL_ERROR
 
 	# Add user to their primary group
-	for acl_group in acl_groups:
-		GROUP_DN="CN="+acl_group+","+ group_acl_base
+	for group in groups:
+		if re.search("^rbl.*", group.lower()) is not None:
+			GROUP_DN="CN="+group+","+ group_rbl_base
+		else if re.search("^acl.*", group.lower()) is not None:
+			GROUP_DN="CN="+group+","+ group_acl_base
+		else:
+			log.add(u"Error adding user to group: %s - group must begin from 'ACL' or 'RBL'! - skip this group" % group)
+			continue
 		try:
 			ldap_connection.modify_s(GROUP_DN, add_member)
 		except ldap.LDAPError, error_message:

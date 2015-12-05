@@ -57,12 +57,12 @@ font-size: 150%;
 <P><B>Район: </B><br>
 """)
 checked="checked"
-for uid in conf.default_acl_groups:
+for uid in conf.default_groups:
 	print("""
 <input type="radio" name="ou_name" value="%(id)s" %(checked)s> %(name)s<br>
 """ % {\
 	"id":uid,\
-	"name":conf.default_acl_groups[uid]["name"].encode("utf8"),\
+	"name":conf.default_groups[uid]["name"].encode("utf8"),\
 	"checked":checked
 	})
 	checked=""
