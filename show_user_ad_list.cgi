@@ -142,8 +142,8 @@ for account_name in users:
 		users_from_db[account_name]["show"]=True
 
 	for comp_name in comps:
-		if fio in comps[comp_name]["description"]
-		hostname=comps[fio]["name"]
+		if fio in comps[comp_name]["description"]:
+			hostname=comps[fio]["name"]
 
 	if description == "":
 		description="-"
