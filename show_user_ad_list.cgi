@@ -137,10 +137,11 @@ for account_name in users:
 		add_time=users_from_db[account_name]["add_time"]
 		add_ip=users_from_db[account_name]["add_ip"]
 		add_user_name=users_from_db[account_name]["add_user_name"]
-		ip=users_from_db[account_name]["ip"]
-		hostname=users_from_db[account_name]["hostname"]
+#ip=users_from_db[account_name]["ip"]
 		fio=users_from_db[account_name]["fio"]
 		users_from_db[account_name]["show"]=True
+	if fio in comps:
+		hostname=comps[fio]
 
 	if description == "":
 		description="-"

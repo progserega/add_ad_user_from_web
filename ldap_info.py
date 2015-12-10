@@ -59,7 +59,7 @@ def get_computers(ad):
 			comp["full_name"]="%s.drsk.rao-esv.ru" % result[1]['cn'][0].lower()
 			if "description" in result[1]:
 				comp["description"]=result[1]['description'][0]
-			comps[comp["name"]]=comp
+			comps[comp["description"]]=comp
 	return comps
 
 def get_users(ad):
