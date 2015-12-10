@@ -140,7 +140,9 @@ for account_name in users:
 #ip=users_from_db[account_name]["ip"]
 		fio=users_from_db[account_name]["fio"]
 		users_from_db[account_name]["show"]=True
-	if fio in comps:
+
+	for comp_name in comps:
+		if fio in comps[comp_name]["description"]
 		hostname=comps[fio]["name"]
 
 	if description == "":
