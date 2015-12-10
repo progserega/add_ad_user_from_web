@@ -82,7 +82,6 @@ print("""
 				<TH COLSPAN=1>ОС</TH>
 				<TH COLSPAN=1>Версия ОС</TH>
 				<TH COLSPAN=1>Патчи</TH>
-				<TH COLSPAN=1>Старый логин</TH>
 				<TH COLSPAN=1>С какого IP заведена</TH>
 				<TH COLSPAN=1>Когда заведена</TH>
 				<TH COLSPAN=1>Кто заводил</TH>
@@ -110,7 +109,6 @@ for account_name in users:
 
 	description="-"
 	passwd="-"
-	old_login="-"
 	drsk_email="-"
 	drsk_email_passwd="-"
 	rsprim_email="-"
@@ -129,7 +127,6 @@ for account_name in users:
 	
 	if account_name in users_from_db:
 		passwd=users_from_db[account_name]["passwd"]
-		old_login=users_from_db[account_name]["old_login"]
 		drsk_email=users_from_db[account_name]["drsk_email"]
 		drsk_email_passwd=users_from_db[account_name]["drsk_email_passwd"]
 		rsprim_email=users_from_db[account_name]["rsprim_email"]
@@ -149,8 +146,6 @@ for account_name in users:
 		description="-"
 	if passwd == "":
 		passwd="-"
-	if old_login == "":
-		old_login="-"
 	if drsk_email == "":
 		drsk_email="-"
 	if drsk_email_passwd == "":
@@ -192,7 +187,6 @@ for account_name in users:
 		 <TD>%(os)s</TD>
 		 <TD>%(os_version)s</TD>
 		 <TD>%(patches)s</TD>
-		 <TD>%(old_login)s</TD>
 		 <TD>%(add_ip)s</TD>
 		 <TD>%(add_time)s</TD>
 		 <TD>%(add_user_name)s</TD>
@@ -203,7 +197,6 @@ for account_name in users:
 		 "account_name":user["account_name"],\
 		 "status":html_status,\
 		 "passwd":passwd,\
-		 "old_login":old_login,\
 		 "drsk_email":drsk_email,\
 		 "drsk_email_passwd":drsk_email_passwd,\
 		 "rsprim_email":rsprim_email,\
@@ -250,7 +243,6 @@ print("""
 				<TH COLSPAN=1>ОС</TH>
 				<TH COLSPAN=1>Версия ОС</TH>
 				<TH COLSPAN=1>Патчи</TH>
-				<TH COLSPAN=1>Старый логин</TH>
 				<TH COLSPAN=1>С какого IP заведена</TH>
 				<TH COLSPAN=1>Когда заведена</TH>
 				<TH COLSPAN=1>Кто заводил</TH>
@@ -263,7 +255,6 @@ for fio in users_from_db_fio:
 	status="-"
 	description="-"
 	passwd="-"
-	old_login="-"
 	drsk_email="-"
 	drsk_email_passwd="-"
 	rsprim_email="-"
@@ -282,7 +273,6 @@ for fio in users_from_db_fio:
 		continue
 
 	passwd=user["passwd"]
-	old_login=user["old_login"]
 	drsk_email=user["drsk_email"]
 	drsk_email_passwd=user["drsk_email_passwd"]
 	rsprim_email=user["rsprim_email"]
@@ -305,8 +295,6 @@ for fio in users_from_db_fio:
 		description="-"
 	if passwd == "":
 		passwd="-"
-	if old_login == "":
-		old_login="-"
 	if drsk_email == "":
 		drsk_email="-"
 	if drsk_email_passwd == "":
@@ -350,7 +338,6 @@ for fio in users_from_db_fio:
 		 <TD>%(os)s</TD>
 		 <TD>%(os_version)s</TD>
 		 <TD>%(patches)s</TD>
-		 <TD>%(old_login)s</TD>
 		 <TD>%(add_ip)s</TD>
 		 <TD>%(add_time)s</TD>
 		 <TD>%(add_user_name)s</TD>
@@ -361,7 +348,6 @@ for fio in users_from_db_fio:
 		 "account_name":account_name,\
 		 "status":html_status,\
 		 "passwd":passwd,\
-		 "old_login":old_login,\
 		 "drsk_email":drsk_email,\
 		 "drsk_email_passwd":drsk_email_passwd,\
 		 "rsprim_email":rsprim_email,\
