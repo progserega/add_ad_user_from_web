@@ -32,7 +32,7 @@ STATUS_USER_EXIST=2
 STATUS_USER_NOT_EXIST=3
 
 
-def set_email_in_ad(username, domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base):
+def set_email_in_ad(username, email, domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base):
 	# LDAP connection
 	try:
 		# без ssl:
@@ -66,50 +66,25 @@ def set_email_in_ad(username, domain=conf.domain, employee_num="1",base_dn=conf.
 		return STATUS_INTERNAL_ERROR
 
 	# Check the results
-	if len(user_results) == 0:
+	if len(user_results) != 0:
 		log.add(u"User %s already exists in AD:" % username )
 #print "User", username, "already exists in AD:", \
 		user_results[0][1]['distinguishedName'][0]
+	else:
 		return STATUS_USER_NOT_EXIST
-	print (user_results)
-	sys.exit(0)
+	user_dn=user_results[0][0]
 
-	# Lets build our user: Disabled to start (514)
-	user_dn = 'cn=' + fname + ' ' + lname + ',' + base_dn
-	user_attrs = {}
-	user_attrs['objectClass'] = \
-	['top', 'person', 'organizationalPerson', 'user']
-	user_attrs['cn'] = fname + ' ' + lname
-#user_attrs['cn'] = familiya + ' ' + name + ' ' + otchestvo
-	user_attrs['userPrincipalName'] = username + '@' + domain
-	user_attrs['sAMAccountName'] = username
-	user_attrs['givenName'] = fname
-	user_attrs['sn'] = lname
-	user_attrs['displayName'] = familiya + ' ' + name + ' ' + otchestvo
-	# Наименование в списке просмотра пользователей через виндовый интерфейс:
-	user_attrs['name'] = familiya + ' ' + name + ' ' + otchestvo
-	user_attrs['description'] = description
-	user_attrs['company'] = company
-	#user_attrs['userAccountControl'] = '514'
-	user_attrs['userAccountControl'] = "%d" % (NORMAL_ACCOUNT + DONT_EXPIRE_PASSWORD + ACCOUNTDISABLE)
-	#user_attrs['mail'] = username + '@host.com'
-	user_attrs['employeeID'] = employee_num
-	#user_attrs['homeDirectory'] = '\\\\server\\' + username
-	#user_attrs['homeDrive'] = 'H:'
-	#user_attrs['scriptPath'] = 'logon.vbs'
-	user_ldif = modlist.addModlist(user_attrs)
-
-	# Prep the password
-	unicode_email = unicode('\"' + email + '\"', 'iso-8859-1')
+#unicode_email = unicode('\"' + email + '\"', 'iso-8859-1')
+	unicode_email = unicode(email, 'iso-8859-1')
 	email_value = unicode_email.encode('utf-16-le')
-	#password_value = unicode_pass.encode('utf-16').lstrip('\377\376')
-	mod_email = [(ldap.MOD_REPLACE, 'email', [password_value])]
+#mod_email = [(ldap.MOD_REPLACE, 'mail', [email_value])]
+	mod_email = [(ldap.MOD_REPLACE, 'mail', email)]
 
 	# mod the email:
 	try:
 		ldap_connection.modify_s(user_dn, mod_email)
 	except ldap.LDAPError, error_message:
-		log.add(u"Error setting password: %s" % error_message)
+		log.add(u"Error modify email: %s" % error_message)
 		return STATUS_INTERNAL_ERROR
 
 	# LDAP unbind
@@ -119,13 +94,15 @@ def set_email_in_ad(username, domain=conf.domain, employee_num="1",base_dn=conf.
 
 # ========== main ==============
 
-for user in ad_user_db.get_ad_user_list_by_login():
+users=ad_user_db.get_ad_user_list_by_login()
+for login in users:
+	user=users[login]
 	if "drsk_email" in user:
-		print("""Пробуем присвоить почту %(drsk_email)s пользователю %(login)s""" % {"drsk_email":user["drsk_email"], "login":user["login"]})
-		status=set_email_in_ad(username=user["login"],domain=conf.domain, base_dn=conf.base_user_dn , email=user["drsk_email"])
-		if status == STATUS_SUCCESS:
-			num_success_op+=1
-			print("""УСПЕШНО присвоена почта %(drsk_email)s пользователю %(login)s""" % {"drsk_email":user["drsk_email"], "login":user["login"]})
-		else:
-			print("""ОШИБКА присвоения почты %(drsk_email)s пользователю %(login)s""" % {"drsk_email":user["drsk_email"], "login":user["login"]})
-		sys.exit(0)
+		if len(user["drsk_email"])>0 and len(user["login"])>0: 
+			print("""Пробуем присвоить почту %(drsk_email)s пользователю %(login)s""" % {"drsk_email":user["drsk_email"], "login":user["login"]})
+			status=set_email_in_ad(username=user["login"], email=user["drsk_email"])
+			if status == STATUS_SUCCESS:
+				print("""УСПЕШНО присвоена почта %(drsk_email)s пользователю %(login)s""" % {"drsk_email":user["drsk_email"], "login":user["login"]})
+			else:
+				print("""ОШИБКА присвоения почты %(drsk_email)s пользователю %(login)s""" % {"drsk_email":user["drsk_email"], "login":user["login"]})
+sys.exit(0)
