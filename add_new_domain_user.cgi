@@ -64,7 +64,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
 	user["email_server2"]=email_server2
 	user["description"]=description
 	num_op+=1
-	status=CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), conf.default_groups[ou_name]["name"].encode('utf8'), groups=conf.default_groups[ou_name]["groups"],domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base)
+	status=CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), email_server1, conf.default_groups[ou_name]["name"].encode('utf8'), groups=conf.default_groups[ou_name]["groups"],domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base)
 	if status == STATUS_SUCCESS:
 		num_success_op+=1
 		print("""<p>УСПЕШНО заведён пользователь %s в домене""" % login.encode('utf8'))
@@ -236,7 +236,7 @@ login: %(login)s, passwd: '%(passwd)s', email_server1: %(email_server1)s, email_
 		return True
 
 
-def CreateADUser(username, password, name, familiya, otchestvo, description, company, groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base):
+def CreateADUser(username, password, name, familiya, otchestvo, description, email, company, groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base):
 	"""
 	Create a new user account in Active Directory.
 	"""
@@ -322,6 +322,12 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 	# Delete the Domain Users group membership
 	#del_member = [(ldap.MOD_DELETE, 'member', user_dn)]
 
+#unicode_email = unicode('\"' + email + '\"', 'iso-8859-1')
+	unicode_email = unicode(email, 'iso-8859-1')
+	email_value = unicode_email.encode('utf-16-le')
+#mod_email = [(ldap.MOD_REPLACE, 'mail', [email_value])]
+	mod_email = [(ldap.MOD_REPLACE, 'mail', email)]
+
 	# Add the new user account
 	try:
 		ldap_connection.add_s(user_dn, user_ldif)
@@ -341,6 +347,13 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, com
 		ldap_connection.modify_s(user_dn, mod_acct)
 	except ldap.LDAPError, error_message:
 		log.add(u"Error enabling user: %s" % error_message)
+		return STATUS_INTERNAL_ERROR
+
+	# mod the email:
+	try:
+		ldap_connection.modify_s(user_dn, mod_email)
+	except ldap.LDAPError, error_message:
+		log.add(u"Error modify email: %s" % error_message)
 		return STATUS_INTERNAL_ERROR
 
 	# Add user to their primary group
