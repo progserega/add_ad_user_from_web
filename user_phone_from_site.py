@@ -25,6 +25,7 @@ def get_users_phones_from_site():
 	users_phones={}
 	sql="select name, phone, (select dolzh_name from ae_phone_dolzn where id=ae_phone_kadry.dolzh_id) as dolj, (select otdel_name from ae_phone_otdel where id=ae_phone_kadry.otdel1_id) as otdel  from ae_phone_kadry"
 	try:
+		cur.execute('SET NAMES cp1251')
 		cur.execute(sql)
 		data = cur.fetchall()
 	except mdb.Error, e:
@@ -34,11 +35,12 @@ def get_users_phones_from_site():
 
 	for item in data:
 		user={}
-		user["fio"]=item[0]
+		fio=item[0].decode("cp1251").encode("utf-8")
+		user["fio"]=fio
 		user["phone"]=item[1]
 		user["job"]=item[2]
 		user["department"]=item[3]
-		users_phones[item[0]]=user
+		users_phones[fio]=user
 
 	if con:    
 		con.close()
