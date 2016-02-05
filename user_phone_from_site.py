@@ -38,8 +38,8 @@ def get_users_phones_from_site():
 		fio=item[0].decode("cp1251").encode("utf-8")
 		user["fio"]=fio
 		user["phone"]=item[1]
-		user["job"]=item[2]
-		user["department"]=item[3]
+		user["job"]=item[2].decode("cp1251").encode("utf-8")
+		user["department"]=item[3].decode("cp1251").encode("utf-8")
 		users_phones[fio]=user
 
 	if con:    
