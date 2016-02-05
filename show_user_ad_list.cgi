@@ -60,7 +60,7 @@ users=ad.get_users(l)
 comps=ad.get_computers(l)
 users_from_db=ad_user_db.get_ad_user_list_by_login()
 users_from_db_fio=ad_user_db.get_ad_user_list_by_fio()
-users_phones=get_users_phones_from_site()
+users_phones=user_phone_from_site.get_users_phones_from_site()
 
 
 print("""
