@@ -38,7 +38,7 @@ def get_users_phones_from_site():
 		user["phone"]=item[1]
 		user["job"]=item[2]
 		user["department"]=item[3]
-		users_phones.append(user)
+		users_phones[fio]=user
 
 	if con:    
 		con.close()
