@@ -4,7 +4,7 @@
 import sys
 import os
 import MySQLdb as mdb
-import config as config
+import config as conf
 import logger as log
 
 STATUS_SUCCESS=0
