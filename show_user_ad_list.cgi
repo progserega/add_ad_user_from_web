@@ -6,6 +6,7 @@ import ldap_info as ad
 import logger as log
 import user_ad_postgres_db as ad_user_db
 import config as conf
+import user_phone_from_site
 
 web_user_agent=os.getenv("HTTP_USER_AGENT")
 web_user_addr=os.getenv("REMOTE_ADDR")
@@ -59,12 +60,13 @@ users=ad.get_users(l)
 comps=ad.get_computers(l)
 users_from_db=ad_user_db.get_ad_user_list_by_login()
 users_from_db_fio=ad_user_db.get_ad_user_list_by_fio()
+users_phones=get_users_phones_from_site()
 
 
 print("""
 		<TABLE BORDER>
 		<TR>    
-				<TH COLSPAN=19>Список пользователей домена</TH>
+				<TH COLSPAN=22>Список пользователей домена</TH>
 		</TR>
 		<TR>
 				<TH COLSPAN=1>№</TH>
@@ -78,6 +80,9 @@ print("""
 				<TH COLSPAN=1>Пароль почты rsprim</TH>
 				<TH COLSPAN=1>Статус учётки</TH>
 				<TH COLSPAN=1>Имя хоста польз.</TH>
+				<TH COLSPAN=1>Телефон</TH>
+				<TH COLSPAN=1>Должность</TH>
+				<TH COLSPAN=1>Отдел</TH>
 				<TH COLSPAN=1>IP хоста польз.</TH>
 				<TH COLSPAN=1>ОС</TH>
 				<TH COLSPAN=1>Версия ОС</TH>
@@ -121,6 +126,9 @@ for account_name in users:
 	add_user_name="-"
 	hostname="-"
 	ip="-"
+	phone="-"
+	job="-"
+	department="-"
 
 	if "description" in user:
 		description=user["description"]
@@ -145,6 +153,10 @@ for account_name in users:
 		if "description" in comps[comp_name]:
 			if fio in comps[comp_name]["description"]:
 				hostname=comps[comp_name]["name"]
+	if fio in users_phones:
+		phone=users_phones[fio]["phone"]
+		job=users_phones[fio]["job"]
+		department=users_phones[fio]["department"]
 
 	if description == "":
 		description="-"
@@ -174,6 +186,13 @@ for account_name in users:
 		hostname="-"
 	if ip == "":
 		ip="-"
+	if phone == "":
+		phone="-"
+	if job == "":
+		job="-"
+	if department == "":
+		department="-"
+
 
 	print("""<TR>
 		 <TD>%(index)d</TD>
@@ -187,6 +206,9 @@ for account_name in users:
 		 <TD>%(rsprim_email_passwd)s</TD>
 		 <TD>%(status)s</TD>
 		 <TD>%(hostname)s</TD>
+		 <TD>%(phone)s</TD>
+		 <TD>%(job)s</TD>
+		 <TD>%(department)s</TD>
 		 <TD>%(ip)s</TD>
 		 <TD>%(os)s</TD>
 		 <TD>%(os_version)s</TD>
@@ -206,6 +228,9 @@ for account_name in users:
 		 "rsprim_email":rsprim_email,\
 		 "rsprim_email_passwd":rsprim_email_passwd,\
 		 "hostname":hostname,\
+		 "phone":phone,\
+		 "job":job,\
+		 "department":department,\
 		 "ip":ip,\
 		 "os":os,\
 		 "os_version":os_version,\
@@ -243,6 +268,9 @@ print("""
 				<TH COLSPAN=1>Пароль почты rsprim</TH>
 				<TH COLSPAN=1>Статус учётки</TH>
 				<TH COLSPAN=1>Имя хоста польз.</TH>
+				<TH COLSPAN=1>Телефон</TH>
+				<TH COLSPAN=1>Должность</TH>
+				<TH COLSPAN=1>Отдел</TH>
 				<TH COLSPAN=1>IP хоста польз.</TH>
 				<TH COLSPAN=1>ОС</TH>
 				<TH COLSPAN=1>Версия ОС</TH>
@@ -271,6 +299,9 @@ for fio in users_from_db_fio:
 	add_user_name="-"
 	hostname="-"
 	ip="-"
+	phone="-"
+	job="-"
+	department="-"
 
 	# Показываем, если нет в домене:
 	if user["login"] in users:
@@ -292,6 +323,11 @@ for fio in users_from_db_fio:
 	user["show"]=True
 	description=user["doljnost"]
 	account_name=user["login"]
+
+	if fio in users_phones:
+		phone=users_phones[fio]["phone"]
+		job=users_phones[fio]["job"]
+		department=users_phones[fio]["department"]
 
 	if account_name == "":
 		account_name="-"
@@ -323,6 +359,12 @@ for fio in users_from_db_fio:
 		hostname="-"
 	if ip == "":
 		ip="-"
+	if phone == "":
+		phone="-"
+	if job == "":
+		job="-"
+	if department == "":
+		department="-"
 
 	html_status="""<span class="banned">%s</span>""" % "Не заведён в домене"
 
@@ -338,6 +380,9 @@ for fio in users_from_db_fio:
 		 <TD>%(rsprim_email_passwd)s</TD>
 		 <TD>%(status)s</TD>
 		 <TD>%(hostname)s</TD>
+		 <TD>%(phone)s</TD>
+		 <TD>%(job)s</TD>
+		 <TD>%(department)s</TD>
 		 <TD>%(ip)s</TD>
 		 <TD>%(os)s</TD>
 		 <TD>%(os_version)s</TD>
@@ -357,6 +402,9 @@ for fio in users_from_db_fio:
 		 "rsprim_email":rsprim_email,\
 		 "rsprim_email_passwd":rsprim_email_passwd,\
 		 "hostname":hostname,\
+		 "phone":phone,\
+		 "job":job,\
+		 "department":department,\
 		 "ip":ip,\
 		 "os":os,\
 		 "os_version":os_version,\

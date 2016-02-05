@@ -31,6 +31,10 @@ user_list_db_name="users_ad_list_db"
 user_list_db_user="users_ad_list_user"
 user_list_db_passwd="secretpwd"
 
+user_phone_db_host="dbhost.company.ru"
+user_phone_db_name="users_ad_phone_db"
+user_phone_db_user="users_ad_phone_user"
+user_phone_db_passwd="secretpwd"
 
 send_report_to=["admin1@company.ru", "admin2@company.ru"]
 send_report_from="admin@company.ru"
