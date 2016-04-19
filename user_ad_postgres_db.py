@@ -41,7 +41,8 @@ def get_ad_user_list_by_fio():
 			doljnost,
 			add_time,
 			add_ip,
-			add_user_name
+			add_user_name,
+			old_familiya
 		from ad_users
 		"""
 		if config.DEBUG:
@@ -73,6 +74,7 @@ def get_ad_user_list_by_fio():
 		user["add_time"]=line[17]
 		user["add_ip"]=line[18]
 		user["add_user_name"]=line[19]
+		user["old_familiya"]=line[20]
 		user_list[user["fio"]]=user
 	return user_list
 
@@ -105,7 +107,8 @@ def get_ad_user_list_by_login():
 			doljnost,
 			add_time,
 			add_ip,
-			add_user_name
+			add_user_name,
+			old_familiya
 		from ad_users
 		"""
 		if config.DEBUG:
@@ -137,6 +140,7 @@ def get_ad_user_list_by_login():
 		user["add_time"]=line[17]
 		user["add_ip"]=line[18]
 		user["add_user_name"]=line[19]
+		user["old_familiya"]=line[20]
 		user_list[user["login"]]=user
 	return user_list
 
