@@ -162,7 +162,7 @@ for account_name in users:
 		phone=users_phones[fio]["phone"]
 		job=users_phones[fio]["job"]
 		department=users_phones[fio]["department"]
-	else if man_fio in users_phones:
+	elif man_fio in users_phones:
 		phone=users_phones[man_fio]["phone"]
 		job=users_phones[man_fio]["job"]
 		department=users_phones[man_fio]["department"]
@@ -346,7 +346,7 @@ for fio in users_from_db_fio:
 		phone=users_phones[fio]["phone"]
 		job=users_phones[fio]["job"]
 		department=users_phones[fio]["department"]
-	else if man_fio in users_phones:
+	elif man_fio in users_phones:
 		phone=users_phones[man_fio]["phone"]
 		job=users_phones[man_fio]["job"]
 		department=users_phones[man_fio]["department"]
