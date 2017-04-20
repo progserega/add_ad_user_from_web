@@ -137,11 +137,11 @@ for account_name in users:
 
 	if "maiden_name" in user:
 		old_familiya=user["maiden_name"]
-	
+
 	if account_name in users_from_db:
-    if old_familiya=="-" or old_familiya==None or old_familiya=="None":
-      old_familiya=users_from_db[account_name]["old_familiya"]
 		passwd=users_from_db[account_name]["passwd"]
+		if old_familiya=="-" or old_familiya==None or old_familiya=="None":
+			old_familiya=users_from_db[account_name]["old_familiya"]
 		drsk_email=users_from_db[account_name]["drsk_email"]
 		drsk_email_passwd=users_from_db[account_name]["drsk_email_passwd"]
 		rsprim_email=users_from_db[account_name]["rsprim_email"]
