@@ -69,7 +69,7 @@ def get_users(ad):
 		basedn = conf.base_user_dn
 		scope = ldap.SCOPE_SUBTREE
 		filterexp = '(sAMAccountName=*)'
-		attrlist = ['sAMAccountName','description','givenName','sn','mail','userWorkstations','initials','displayName','info','displayNamePrintable','canonicalName','ms-DS-UserAccountAutoLocked','msDS-UserAccountDisabled','msDS-UserDontExpirePassword','msDS-UserPasswordExpired','UserAccountControl']
+		attrlist = ['sAMAccountName','descrption','givenName','sn','mail','userWorkstations','initials','displayName','info','displayNamePrintable','canonicalName','ms-DS-UserAccountAutoLocked','msDS-UserAccountDisabled','msDS-UserDontExpirePassword','msDS-UserPasswordExpired','UserAccountControl','msDS-PhoneticLastName']
 		#attrlist = ['cn']
 		results = ad.search_s(basedn, scope, filterexp, attrlist)
 	except ldap.LDAPError, desc:
@@ -88,6 +88,8 @@ def get_users(ad):
 				user["secondname"]=result[1]['sn'][0]
 			if "mail" in result[1]:
 				user["mail"]=result[1]['mail'][0]
+			if "msDS-PhoneticLastName" in result[1]:
+				user["maiden_name"]=result[1]['msDS-PhoneticLastName'][0]
 			if "canonicalName" in result[1]:
 				user["full_name"]=re.sub(r'.*/','',result[1]['canonicalName'][0])
 			users[user["account_name"]]=user

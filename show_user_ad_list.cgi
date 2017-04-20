@@ -134,9 +134,13 @@ for account_name in users:
 
 	if "description" in user:
 		description=user["description"]
+
+	if "maiden_name" in user:
+		old_familiya=user["maiden_name"]
 	
 	if account_name in users_from_db:
-		old_familiya=users_from_db[account_name]["old_familiya"]
+    if old_familiya=="-" or old_familiya==None or old_familiya=="None":
+      old_familiya=users_from_db[account_name]["old_familiya"]
 		passwd=users_from_db[account_name]["passwd"]
 		drsk_email=users_from_db[account_name]["drsk_email"]
 		drsk_email_passwd=users_from_db[account_name]["drsk_email_passwd"]
