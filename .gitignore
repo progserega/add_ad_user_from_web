@@ -3,4 +3,9 @@ config.py
 config.pyc
 logger.pyc
 user_ad_postgres_db.pyc
+add_to_email_db.pyc
+fix_ad_postgres_db_fio.py
+ldap_info.pyc
+sendemail.pyc
+user_phone_from_site.pyc
 .htaccess
