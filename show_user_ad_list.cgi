@@ -142,7 +142,8 @@ for account_name in users:
 		passwd=users_from_db[account_name]["passwd"]
 		if old_familiya=="-" or old_familiya==None or old_familiya=="None":
 			if "old_familiya" in users_from_db[account_name]:
-				old_familiya=users_from_db[account_name]["old_familiya"]
+				if users_from_db[account_name]["old_familiya"]!="-" or users_from_db[account_name]["old_familiya"]!=None or users_from_db[account_name]["old_familiya"]!="None":
+					old_familiya=users_from_db[account_name]["old_familiya"]
 		drsk_email=users_from_db[account_name]["drsk_email"]
 		drsk_email_passwd=users_from_db[account_name]["drsk_email_passwd"]
 		rsprim_email=users_from_db[account_name]["rsprim_email"]
