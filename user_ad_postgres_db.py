@@ -244,5 +244,7 @@ def add_ad_user(name, familiya, otchestvo, login, old_login, passwd, drsk_email,
 		cur.execute(sql)
 		conn.commit()
 	except psycopg2.Error as e:
-		log.add("user_ad_postgres_db.py I am unable insert data to db: %s" % e.pgerror);return STATUS_INTERNAL_ERROR
+		log.add("user_ad_postgres_db.py I am unable insert data to db: %s" % e.pgerror);log.add("""sql was:
+%s
+""" % sql);return STATUS_INTERNAL_ERROR
 	return STATUS_SUCCESS

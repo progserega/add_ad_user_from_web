@@ -29,16 +29,19 @@ color: red; /* Красный цвет выделения */
 }
 </style>
 <style>
-.selected_node {
+.password {
 color: green; /* Зелёный цвет выделения */
 background: #D9FFAD;
 font-size: 150%;
+/*font-family: courier-new;*/
+font-family: Andale Mono;
 }
 </style>
 
 </HEAD>
 
 <body><h1>Добавление нового пользователя в домен</h1>
+
 
 <form method=POST action="add_new_domain_user.cgi">
 <P><B>Фамилия:</B>

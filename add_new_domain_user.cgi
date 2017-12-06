@@ -67,15 +67,15 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
 	status=CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), email_server1, conf.default_groups[ou_name]["name"].encode('utf8'), groups=conf.default_groups[ou_name]["groups"],domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base)
 	if status == STATUS_SUCCESS:
 		num_success_op+=1
-		print("""<p>УСПЕШНО заведён пользователь %s в домене""" % login.encode('utf8'))
+		print("""<p><span class='success'>УСПЕШНО</span> заведён пользователь %s в домене""" % login.encode('utf8'))
 		log.add(u"""SUCCESS - успешно заведенна учётная запись '%s' в домене""" % login) 
 		full_status["создание пользователя в домене"]="успешно"
 	elif status == STATUS_USER_EXIST:
-		print("""<p>ОШИБКА заведения учётной записи '%s' в домене - пользователь УЖЕ СУЩЕСТВУЕТ</p>""" % login) 
+		print("""<p><span class='error'>ОШИБКА</span> заведения учётной записи '%s' в домене - пользователь УЖЕ СУЩЕСТВУЕТ</p>""" % login) 
 		log.add(u"""ERROR USER EXIST - ошибка заведения учётной записи '%s' в домене - пользователь УЖЕ СУЩЕСТВУЕТ""" % login) 
 		full_status["создание пользователя в домене"]="ошибка - этот пользователь в домене уже существует"
 	else:
-		print("""<p>ОШИБКА заведения учётной записи '%s' в домене</p>""" % login) 
+		print("""<p><span class='error'>ОШИБКА</span> заведения учётной записи '%s' в домене</p>""" % login) 
 		log.add(u"""ERROR - ошибка заведения учётной записи '%s' в домене""" % login) 
 		full_status["создание пользователя в домене"]="ошибка - внутренняя ошибка скрипта при создании пользователя"
 
@@ -91,16 +91,16 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
 		status=email_db.add_user_to_exim_db(db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=conf.email_server1_domain, email_passwd=passwd, email_descr=fio.encode('utf8'))
 		if status == STATUS_SUCCESS:
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
-			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
+			print("""<p><span class='success'>УСПЕШНО</span> заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 			num_success_op+=1
 			full_status["заведение почты на основном (prim.drsk.ru) сервере"]="успешно"
 		elif status == STATUS_USER_EXIST:
 			log.add(u"ERROR USER EXIST  - add email to server: %s, %s failed - mailbox exist!" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
-			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
+			print("""<p><span class='error'>ОШИБКА</span> заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 			full_status["заведение почты на основном (prim.drsk.ru) сервере"]="ошибка - такой пользователь уже существует"
 		else:
 			log.add(u"ERROR add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
-			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
+			print("""<p><span class='error'>ОШИБКА</span> заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
 			full_status["заведение почты на основном (prim.drsk.ru) сервере"]="ошибка - внутренняя ошибка скрипта"
 
 	create_email=False
@@ -115,16 +115,16 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
 		status=email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=passwd, email_descr=fio.encode('utf8'))
 		if status == STATUS_SUCCESS:
 			log.add(u"SUCCESS add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
-			print("""<p>УСПЕШНО заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
+			print("""<p><span class='success'>УСПЕШНО</span> заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
 			full_status["заведение почты на резервном (rsprim.ru) сервере"]="успешно"
 			num_success_op+=1
 		elif status == STATUS_USER_EXIST:
 			log.add(u"ERROR USER EXIST  - add email to server: %s, %s failed - mailbox exist!" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
-			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
+			print("""<p><span class='error'>ОШИБКА</span> заведения ящика %s@%s на сервере %s - ящик УЖЕ СУЩЕСТВУЕТ</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
 			full_status["заведение почты на резервном (rsprim.ru) сервере"]="ошибка - такой пользователь уже существует"
 		else:
 			log.add(u"ERROR add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
-			print("""<p>ОШИБКА заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
+			print("""<p><span class='error'>ОШИБКА</span> заведения ящика %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
 			full_status["заведение почты на резервном (rsprim.ru) сервере"]="ошибка - внутренняя ошибка скрипта"
 
 	#======================= Добавляем пользователя в базу: ====================
@@ -151,16 +151,16 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
 				add_user_name=web_user_name,\
 				add_ip=web_user_addr)
 		if status == STATUS_SUCCESS:
-			print("""<p>УСПЕШНО добавили пользователя '%s' в базу пользователей</p>""" % user["login"].encode('utf8'))
+			print("""<p><span class='success'>УСПЕШНО</span> добавили пользователя '%s' в базу пользователей</p>""" % user["login"].encode('utf8'))
 			log.add(u"""SUCCESS - добавили пользователя '%s' в базу пользователей""" %  user["login"].encode('utf8'))
 			full_status["добавление пользователя в базу пользователей"]="успешно"
 			num_success_op+=1
 		elif status == STATUS_USER_EXIST:
-			print("""<p>ОШИБКА добавления записи о пользователе в базу данных (postgres) пользователей - ПОЛЬЗОВАЕЛЬ с таким ящиком rsprim.ru (%s) УЖЕ СУЩЕСТВУЕТ</p>""" % user["email_server2"])
+			print("""<p><span class='error'>ОШИБКА</span> добавления записи о пользователе в базу данных (postgres) пользователей - ПОЛЬЗОВАЕЛЬ с таким ящиком rsprim.ru (%s) УЖЕ СУЩЕСТВУЕТ</p>""" % user["email_server2"])
 			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"].encode('utf8'))
 			full_status["добавление пользователя в базу пользователей"]="ошибка - такой пользователь уже существует"
 		else:
-			print("""<p>ОШИБКА добавления записи о пользователе '%s' в базу данных (postgres) пользователей - обратитесь к системному администратору</p>""" % user["login"].encode('utf8'))
+			print("""<p><span class='error'>ОШИБКА</span> добавления записи о пользователе '%s' в базу данных (postgres) пользователей - обратитесь к системному администратору</p>""" % user["login"].encode('utf8'))
 			log.add(u"""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"].encode('utf8'))
 			full_status["добавление пользователя в базу пользователей"]="ошибка - внутренняя ошибка скрипта"
 	#===================== Отправляем по почте данные пользователя, но без пароля: =================
@@ -201,10 +201,10 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
 			num_op+=1
 			if sendemail.sendmail(text=text, subj=subj,send_to=send_to,send_from=conf.send_report_from,isTls=False) == True:
 				num_success_op+=1
-				print("""<p>УСПЕШНО отправил уведомление по почте пользователю: %s</p>""" % send_to)
+				print("""<p><span class='success'>УСПЕШНО</span> отправил уведомление по почте пользователю: %s</p>""" % send_to)
 				log.add(u"""SUCCESS - успешно отправил уведомление пользователю: '%s'""" % send_to)
 			else:
-				print("""<p>ОШИБКА отправки уведомления по почте на %s</p>""" % send_to)
+				print("""<p><span class='error'>ОШИБКА</span> отправки уведомления по почте на %s</p>""" % send_to)
 				log.add(u"""ERROR - ошибка отправки уведомления пользователю: '%s'""" % send_to)
 				
 	#=======================================================================
@@ -515,6 +515,39 @@ else:
 	<head>
 	<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 	<title>Результат выполнения</title>
+
+    <style>
+    .password {
+ /*   color: green;  Зелёный цвет выделения */
+ /*   background: #D9FFAD; */
+    font-size: 150%;
+    /*font-family: courier-new;*/
+    font-family: Andale Mono;
+    }
+    </style>
+
+    <style>
+    .info {
+    color: green;  /* Зелёный цвет выделения */
+    background: #D9FFAD; 
+    font-size: 150%;
+    /*font-family: courier-new;*/
+    font-family: Andale Mono;
+    }
+    </style>
+
+    <style>
+    .success {
+    background: green; 
+    }
+    </style>
+
+    <style>
+    .error {
+    background: red; 
+    }
+    </style>
+
 	</head>
 	<body>
 	""" )
@@ -550,13 +583,15 @@ else:
 	print("""<h2>Логин:</h2>
 	<p>%s</p>""" % user["login"].encode('utf8'))
 	print("""<h2>Пароль:</h2>
-	<p>%s</p>""" % user["passwd"].encode('utf8'))
+	<p><span class="password">%s</span></p>""" % user["passwd"].encode('utf8'))
 	print("""<h2>Префикс почты:</h2>
 	<p>%s</p>""" % user["email_prefix"].encode('utf8'))
 	print("""<h2>Почтовый ящик1:</h2>
 	<p>%s</p>""" % user["email_server1"].encode('utf8'))
 	print("""<h2>Почтовый ящик2:</h2>
 	<p>%s</p>""" % user["email_server2"].encode('utf8'))
+	print("<h2>Будьте внимательны с символами в пароле:</h2>")
+	print("<p><span class='info'>1 - один, l - английская прописная Л, 0 - ноль, O - английская буква, I - английская большая И</span></p>")
 	print("</body></html>")
 
 	sys.exit(0)
