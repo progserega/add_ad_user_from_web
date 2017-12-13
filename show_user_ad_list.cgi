@@ -66,12 +66,11 @@ users_phones=user_phone_from_site.get_users_phones_from_site()
 print("""
 		<TABLE BORDER>
 		<TR>    
-				<TH COLSPAN=23>Список пользователей домена</TH>
+				<TH COLSPAN=22>Список пользователей домена</TH>
 		</TR>
 		<TR>
 				<TH COLSPAN=1>№</TH>
 				<TH COLSPAN=1>Полное имя пользователя</TH>
-				<TH COLSPAN=1>Старая фамилия</TH>
 				<TH COLSPAN=1>Логин</TH>
 				<TH COLSPAN=1>Пароль</TH>
 				<TH COLSPAN=1>Описание</TH>
@@ -113,7 +112,6 @@ for account_name in users:
 	else:
 		html_status="""<span class="normal">%s</span>""" % status
 
-	old_familiya="-"
 	description="-"
 	passwd="-"
 	drsk_email="-"
@@ -134,16 +132,9 @@ for account_name in users:
 
 	if "description" in user:
 		description=user["description"]
-
-	if "maiden_name" in user:
-		old_familiya=user["maiden_name"]
-
+	
 	if account_name in users_from_db:
 		passwd=users_from_db[account_name]["passwd"]
-		if old_familiya=="-" or old_familiya==None or old_familiya=="None":
-			if "old_familiya" in users_from_db[account_name]:
-				if users_from_db[account_name]["old_familiya"]!=None:
-					old_familiya=users_from_db[account_name]["old_familiya"]
 		drsk_email=users_from_db[account_name]["drsk_email"]
 		drsk_email_passwd=users_from_db[account_name]["drsk_email_passwd"]
 		rsprim_email=users_from_db[account_name]["rsprim_email"]
@@ -157,8 +148,6 @@ for account_name in users:
 #ip=users_from_db[account_name]["ip"]
 		fio=users_from_db[account_name]["fio"]
 		users_from_db[account_name]["show"]=True
-		# пробуем по отдельности фио:
-		man_fio=users_from_db[account_name]["familiya"]+" "+users_from_db[account_name]["name"]+" "+users_from_db[account_name]["otchestvo"]
 
 	for comp_name in comps:
 		if "description" in comps[comp_name]:
@@ -168,11 +157,6 @@ for account_name in users:
 		phone=users_phones[fio]["phone"]
 		job=users_phones[fio]["job"]
 		department=users_phones[fio]["department"]
-	elif man_fio in users_phones:
-		phone=users_phones[man_fio]["phone"]
-		job=users_phones[man_fio]["job"]
-		department=users_phones[man_fio]["department"]
-
 
 	if description == "":
 		description="-"
@@ -208,14 +192,11 @@ for account_name in users:
 		job="-"
 	if department == "":
 		department="-"
-	if old_familiya == "":
-		old_familiya="-"
 
 
 	print("""<TR>
 		 <TD>%(index)d</TD>
 		 <TD>%(full_name)s</TD>
-		 <TD>%(old_familiya)s</TD>
 		 <TD>%(account_name)s</TD>
 		 <TD>%(passwd)s</TD>
 		 <TD>%(description)s</TD>
@@ -238,7 +219,6 @@ for account_name in users:
 		 </TR>""" % {\
 		 "index":index, \
 		 "full_name":fio,\
-		 "old_familiya":old_familiya,\
 		 "description":description,\
 		 "account_name":user["account_name"],\
 		 "status":html_status,\
@@ -274,12 +254,11 @@ print("""
 <br>
 		<TABLE BORDER>
 		<TR>    
-				<TH COLSPAN=20>Список пользователей из базы данных, не заведённых в домене</TH>
+				<TH COLSPAN=19>Список пользователей из базы данных, не заведённых в домене</TH>
 		</TR>
 		<TR>
 				<TH COLSPAN=1>№</TH>
 				<TH COLSPAN=1>Полное имя пользователя</TH>
-				<TH COLSPAN=1>Старая фамилия</TH>
 				<TH COLSPAN=1>Логин</TH>
 				<TH COLSPAN=1>Пароль</TH>
 				<TH COLSPAN=1>Описание</TH>
@@ -305,7 +284,6 @@ print("""
 index=1
 for fio in users_from_db_fio:
 	user=users_from_db_fio[fio]
-	old_familiya="-"
 	status="-"
 	description="-"
 	passwd="-"
@@ -329,7 +307,6 @@ for fio in users_from_db_fio:
 	if user["login"] in users:
 		continue
 
-	old_familiya=user["old_familiya"]
 	passwd=user["passwd"]
 	drsk_email=user["drsk_email"]
 	drsk_email_passwd=user["drsk_email_passwd"]
@@ -346,16 +323,11 @@ for fio in users_from_db_fio:
 	user["show"]=True
 	description=user["doljnost"]
 	account_name=user["login"]
-	man_fio=useri["familiya"]+" "+user["name"]+" "+user["otchestvo"]
 
 	if fio in users_phones:
 		phone=users_phones[fio]["phone"]
 		job=users_phones[fio]["job"]
 		department=users_phones[fio]["department"]
-	elif man_fio in users_phones:
-		phone=users_phones[man_fio]["phone"]
-		job=users_phones[man_fio]["job"]
-		department=users_phones[man_fio]["department"]
 
 	if account_name == "":
 		account_name="-"
@@ -393,15 +365,12 @@ for fio in users_from_db_fio:
 		job="-"
 	if department == "":
 		department="-"
-	if old_familiya == "":
-		old_familiya="-"
 
 	html_status="""<span class="banned">%s</span>""" % "Не заведён в домене"
 
 	print("""<TR>
 		 <TD>%(index)d</TD>
 		 <TD>%(full_name)s</TD>
-		 <TD>%(old_familiya)s</TD>
 		 <TD>%(account_name)s</TD>
 		 <TD>%(passwd)s</TD>
 		 <TD>%(description)s</TD>
@@ -424,7 +393,6 @@ for fio in users_from_db_fio:
 		 </TR>""" % {\
 		 "index":index, \
 		 "full_name":fio,\
-		 "old_familiya":old_familiya,\
 		 "description":description,\
 		 "account_name":account_name,\
 		 "status":html_status,\
