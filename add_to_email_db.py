@@ -18,7 +18,7 @@ def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, emai
 		con = mdb.connect(host=db_host, user=db_user, passwd=db_passwd, db=db_name, charset='utf8', init_command='SET NAMES UTF8');
 		cur = con.cursor()
 	except mdb.Error, e:
-		log.add("ERROR mysql connect: %d: %s" % (e.args[0],e.args[1]))
+		log.add(u"ERROR mysql connect: %d: %s" % (e.args[0],e.args[1]))
 		return STATUS_INTERNAL_ERROR
 
 	# Проверяем, есть ли уже такой:
@@ -29,11 +29,11 @@ def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, emai
 				 "username":mdb.escape_string(email_prefix + "@" + email_domain) \
 			 }
 		if conf.DEBUG:
-			log.add("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql)
+			log.add(u"add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql.decode('utf8'))
 		cur.execute(sql)
 		result=cur.fetchall()
 	except mdb.Error, e:
-		log.add("ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
+		log.add(u"ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
 		return STATUS_INTERNAL_ERROR
 	if len(result) > 0:
 		# Уже есть такой аккаунт:
@@ -52,29 +52,29 @@ def add_user_to_exim_db(db_host, db_name, db_user, db_passwd, email_prefix, emai
 				 "domain":mdb.escape_string(email_domain) \
 			 }
 		if conf.DEBUG:
-			log.add("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql)
+			log.add(u"add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql.decode('utf8'))
 		cur.execute(sql)
 		con.commit()
 	except mdb.Error, e:
-		log.add("ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
+		log.add(u"ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
 		return STATUS_INTERNAL_ERROR
 
 	# В алиасы:
 	try:
-		sql="""insert into alias (address, goto, domain, created, modified, active) VALUES ('%(address)s','%(goto)s', '%(domain)s', now(), now(), 1 )""" \
+		sql=u"""insert into alias (address, goto, domain, created, modified, active) VALUES ('%(address)s','%(goto)s', '%(domain)s', now(), now(), 1 )""" \
 			 % {\
 				 "address":email_prefix + "@" + email_domain, \
 				 "goto":email_prefix + "@" + email_domain, \
 				 "domain":email_domain \
 			 }
 		if conf.DEBUG:
-			log.add("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql)
+			log.add(u"add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql.decode('utf8'))
 		cur.execute(sql)
 		con.commit()
 	except mdb.Error, e:
-		log.add("ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
+		log.add(u"ERROR mysql insert: %d: %s" % (e.args[0],e.args[1]))
 		return STATUS_INTERNAL_ERROR
 	
-	log.add(" success add email account to: %s@%s" % (email_prefix, email_domain))
+	log.add(u" success add email account to: %s@%s" % (email_prefix, email_domain))
 	return STATUS_SUCCESS
 		
