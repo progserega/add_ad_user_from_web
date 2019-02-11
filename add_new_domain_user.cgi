@@ -165,6 +165,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
       full_status["добавление пользователя в базу пользователей"]="ошибка - внутренняя ошибка скрипта"
   #===================== Отправляем по почте данные пользователя, но без пароля: =================
   if num_success_op!=0:
+    mail_login=email_server1.split('@')[0]
     text="""Добрый день! 
 
 Письмо сгенерировано автоматически. 
@@ -178,6 +179,11 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
 Основная почта: %(email1)s
 Дополнительная почта: %(email2)s
 
+Почтовый логин (для заведения в почте): %(mail_login)s
+
+Пароль можно получить по ссылке:
+https://arm-sit.rs.int/index.php?AdUsersSearch[fio]=&AdUsersSearch[old_familiya]=&AdUsersSearch[login]=%(login)s&AdUsersSearch[passwd]=&AdUsersSearch[drsk_email]=&AdUsersSearch[rsprim_email]=&AdUsersSearch[add_time]=&AdUsersSearch[add_user_name]=&r=ad-users%%2Findex
+
 Отчёт о проделанной работе:
 """ % \
     {\
@@ -185,6 +191,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
       "ip":web_user_addr,\
       "fio":user["fio"].encode('utf8'),\
       "login":user["login"],\
+      "mail_login":mail_login,\
       "descr":user["description"].encode('utf8'),\
       "email1":email_server1,\
       "email2":email_server2\
@@ -369,8 +376,9 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, ema
       ldap_connection.modify_s(GROUP_DN, add_member)
     except ldap.LDAPError, error_message:
       log.add(u"Error adding user to group: %s" % error_message)
-      return STATUS_INTERNAL_ERROR
-    log.add(u"SUCCESS adding user '%s' to group: '%s'" % (username,group) )
+      log.add(u"Error groups: %s" % GROUP_DN)
+
+  
 
   # Modify user's primary group ID
   #try:
