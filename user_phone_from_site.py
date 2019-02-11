@@ -23,7 +23,7 @@ def get_users_phones_from_site():
 		sys.exit(1)
 
 	users_phones={}
-	sql="select name, phone, (select dolzh_name from ae_phone_dolzn where id=ae_phone_kadry.dolzh_id) as dolj, (select otdel_name from ae_phone_otdel where id=ae_phone_kadry.otdel1_id) as otdel  from ae_phone_kadry"
+	sql="select name, phone, (select dolzh_name from ae_phone_dolzn where id=ae_phone_kadry.dolzh_id) as dolj, (select otdel_name from ae_phone_otdel where id=ae_phone_kadry.otdel1_id) as otdel,e_mail  from ae_phone_kadry"
 	try:
 		cur.execute('SET NAMES cp1251')
 		cur.execute(sql)
@@ -40,6 +40,7 @@ def get_users_phones_from_site():
 		user["phone"]=item[1]
 		user["job"]=item[2].decode("cp1251").encode("utf-8")
 		user["department"]=item[3].decode("cp1251").encode("utf-8")
+		user["email"]=item[4]
 		users_phones[fio]=user
 
 	if con:    
