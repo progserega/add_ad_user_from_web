@@ -42,7 +42,10 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
   email_prefix=rus2en(fam.lower()) + "-" + rus2en(name.lower())[0] + rus2en(otch.lower())[0]  
   email_server1=email_prefix+"@"+conf.email_server1_domain
   email_server2=email_prefix+"@"+conf.email_server2_domain
-  passwd=get_passwd()
+  for i in range(1,40):
+    passwd=get_passwd()
+    if re.search('[1lIO0]',passwd) == None:
+      break
 
   if conf.DEBUG:
     print(u"==============================================")
