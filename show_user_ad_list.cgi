@@ -27,23 +27,122 @@ print("""
 <META NAME="CREATED" CONTENT="20100319;10431100">
 <META NAME="CHANGEDBY" CONTENT="Сергей Семёнов">
 <META NAME="CHANGED" CONTENT="20100319;10441400">
-<STYLE TYPE="text/css">
-<!--
-@page { size: 21cm 29.7cm; margin: 2cm }
-P { margin-bottom: 0.21cm }
--->
-</STYLE>
 
-<style>
-   .normal {
-   }
-</style>
-<style>
+<style type="text/css">
+tr:nth-child(even) {background: #DDD}
+tr:nth-child(odd) {background: #FFF}
+tr	{
+	text-align:center;
+	font-size: 0.835vw; //around 14px at 1920px
+}
+#cnt {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}	
+#username {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#acc {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#pwd {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#desc {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#acc_drsk_email {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#pwd_drsk_email {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#acc_rsprim_email {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#pwd_rsprim_email {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#acc_status {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#hostname {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#cellphone {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#position {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#department {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#host_ip {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#host_os {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#host_os_ver {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#patches {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#creator_ip {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#created_time {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
+#creator_who {
+	border: 1px solid #8da1b5;
+	font-family: Tahoma;
+	color: #4f4f4f;
+}
    .banned {
     color: red; /* Красный цвет выделения */
    }
-</style>
-<style>
    .selected_node {
     color: green; /* Зелёный цвет выделения */
   background: #D9FFAD;
@@ -195,27 +294,27 @@ for account_name in users:
 
 
   print("""<TR>
-     <TD>%(index)d</TD>
-     <TD>%(full_name)s</TD>
-     <TD>%(account_name)s</TD>
-     <TD>%(passwd)s</TD>
-     <TD>%(description)s</TD>
-     <TD>%(drsk_email)s</TD>
-     <TD>%(drsk_email_passwd)s</TD>
-     <TD>%(rsprim_email)s</TD>
-     <TD>%(rsprim_email_passwd)s</TD>
-     <TD>%(status)s</TD>
-     <TD>%(hostname)s</TD>
-     <TD>%(phone)s</TD>
-     <TD>%(job)s</TD>
-     <TD>%(department)s</TD>
-     <TD>%(ip)s</TD>
-     <TD>%(os)s</TD>
-     <TD>%(os_version)s</TD>
-     <TD>%(patches)s</TD>
-     <TD>%(add_ip)s</TD>
-     <TD>%(add_time)s</TD>
-     <TD>%(add_user_name)s</TD>
+     <TD id="cnt">%(index)d</TD>
+     <TD id="username">%(full_name)s</TD>
+     <TD id="acc">%(account_name)s</TD>
+     <TD id="pwd">%(passwd)s</TD>
+     <TD id="desc">%(description)s</TD>
+     <TD id="acc_drsk_email">%(drsk_email)s</TD>
+     <TD id="pwd_drsk_email">%(drsk_email_passwd)s</TD>
+     <TD id="acc_rsprim_email">%(rsprim_email)s</TD>
+     <TD id="pwd_rsprim_email">%(rsprim_email_passwd)s</TD>
+     <TD id="acc_status">%(status)s</TD>
+     <TD id="hostname">%(hostname)s</TD>
+     <TD id="cellphone">%(phone)s</TD>
+     <TD id="position">%(job)s</TD>
+     <TD id="department">%(department)s</TD>
+     <TD id="host_ip">%(ip)s</TD>
+     <TD id="host_os">%(os)s</TD>
+     <TD id="host_os_ver">%(os_version)s</TD>
+     <TD id="patches">%(patches)s</TD>
+     <TD id="creator_ip">%(add_ip)s</TD>
+     <TD id="created_time">%(add_time)s</TD>
+     <TD id="creator_who">%(add_user_name)s</TD>
      </TR>""" % {\
      "index":index, \
      "full_name":fio,\
@@ -387,27 +486,27 @@ for fio in users_sorted:
   html_status="""<span class="banned">%s</span>""" % "Не заведён в домене"
 
   print("""<TR>
-     <TD>%(index)d</TD>
-     <TD>%(full_name)s</TD>
-     <TD>%(account_name)s</TD>
-     <TD>%(passwd)s</TD>
-     <TD>%(description)s</TD>
-     <TD>%(drsk_email)s</TD>
-     <TD>%(drsk_email_passwd)s</TD>
-     <TD>%(rsprim_email)s</TD>
-     <TD>%(rsprim_email_passwd)s</TD>
-     <TD>%(status)s</TD>
-     <TD>%(hostname)s</TD>
-     <TD>%(phone)s</TD>
-     <TD>%(job)s</TD>
-     <TD>%(department)s</TD>
-     <TD>%(ip)s</TD>
-     <TD>%(os)s</TD>
-     <TD>%(os_version)s</TD>
-     <TD>%(patches)s</TD>
-     <TD>%(add_ip)s</TD>
-     <TD>%(add_time)s</TD>
-     <TD>%(add_user_name)s</TD>
+     <TD id="cnt">%(index)d</TD>
+     <TD id="username">%(full_name)s</TD>
+     <TD id="acc">%(account_name)s</TD>
+     <TD id="pwd">%(passwd)s</TD>
+     <TD id="desc">%(description)s</TD>
+     <TD id="acc_drsk_email">%(drsk_email)s</TD>
+     <TD id="pwd_drsk_email">%(drsk_email_passwd)s</TD>
+     <TD id="acc_rsprim_email">%(rsprim_email)s</TD>
+     <TD id="pwd_rsprim_email">%(rsprim_email_passwd)s</TD>
+     <TD id="acc_status">%(status)s</TD>
+     <TD id="hostname">%(hostname)s</TD>
+     <TD id="cellphone">%(phone)s</TD>
+     <TD id="position">%(job)s</TD>
+     <TD id="department">%(department)s</TD>
+     <TD id="host_ip">%(ip)s</TD>
+     <TD id="host_os">%(os)s</TD>
+     <TD id="host_os_ver">%(os_version)s</TD>
+     <TD id="patches">%(patches)s</TD>
+     <TD id="creator_ip">%(add_ip)s</TD>
+     <TD id="created_time">%(add_time)s</TD>
+     <TD id="creator_who">%(add_user_name)s</TD>
      </TR>""" % {\
      "index":index, \
      "full_name":fio,\
