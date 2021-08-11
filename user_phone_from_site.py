@@ -47,12 +47,23 @@ def get_users_phones_from_site():
   for item in data:
     user={}
     try:
-      fio=item[0].decode("cp1251").encode("utf-8")
-      user["fio"]=fio
+      if item[0] is not None:
+        fio=item[0].decode("cp1251").encode("utf-8")
+      else:
+        user["fio"]="no value from db"
       user["phone"]=item[1]
-      user["job"]=item[2].decode("cp1251").encode("utf-8")
-      user["department"]=item[3].decode("cp1251").encode("utf-8")
-      user["email"]=item[4]
+      if item[2] is not None:
+        user["job"]=item[2].decode("cp1251").encode("utf-8")
+      else:
+        user["job"]="no value from db"
+      if item[3] is not None:
+        user["department"]=item[3].decode("cp1251").encode("utf-8")
+      else:
+        user["department"]="no value from db"
+      if item[4] is not None:
+        user["email"]=item[4]
+      else:
+        user["email"]="no value from db"
       users_phones[fio]=user
     except Exception as e:
       log.add(get_exception_traceback_descr(e))
