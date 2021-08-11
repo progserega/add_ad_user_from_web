@@ -260,17 +260,17 @@ for account_name in users:
     job=users_phones[fio]["job"]
     department=users_phones[fio]["department"]
     if users_phones[fio]["email"] != "":
-      if drsk_email != users_phones[fio]["email"]:
+      if drsk_email.strip() != users_phones[fio]["email"].strip():
         # почта в приоритете с сайта:
-        log.add("1c != userdb: '%s' != '%s'"%(users_phones[fio]["email"],drsk_email))
-        drsk_email=users_phones[fio]["email"]
+        log.add("1c != userdb: '%s' != '%s'"%(users_phones[fio]["email"].strip(),drsk_email.strip()))
+        drsk_email=users_phones[fio]["email"].strip()
         email_differ = True
 
   # почта из AD:
   if "mail" in user:
-    if user["mail"] != drsk_email:
+    if user["mail"].strip() != drsk_email.strip():
       email_differ = True
-      log.add("ad != 1c: '%s' != '%s'"%(user["mail"],drsk_email))
+      log.add("ad != 1c: '%s' != '%s'"%(user["mail"].strip(),drsk_email.strip()))
 
   if description == "":
     description="-"
