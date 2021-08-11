@@ -11,14 +11,17 @@ import traceback
 STATUS_SUCCESS=0
 STATUS_INTERNAL_ERROR=1
 STATUS_USER_EXIST=2
- 
-def get_exception_traceback_descr(e):
-  tb_str = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
-  result=""
-  for msg in tb_str:
-    result+=msg
-  return result
 
+def get_exception_traceback_descr(e):
+  if hasattr(e, '__traceback__'):
+    tb_str = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+    result=""
+    for msg in tb_str:
+      result+=msg
+    return result
+  else:
+    return e
+ 
 def get_users_phones_from_site():
   #  Начало 
   log.add("get_users_phones_from_site()")
