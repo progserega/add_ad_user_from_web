@@ -211,6 +211,9 @@ for account_name in users:
   else:
     html_status="""<span class="normal">%s</span>""" % status
 
+  # в разных базах - разный email:
+  email_differ = False
+
   description="-"
   passwd="-"
   drsk_email="-"
@@ -256,6 +259,16 @@ for account_name in users:
     phone=users_phones[fio]["phone"]
     job=users_phones[fio]["job"]
     department=users_phones[fio]["department"]
+    if users_phones[fio]["email"] != "":
+      if drsk_email != users_phones[fio]["email"]:
+        # почта в приоритете с сайта:
+        drsk_email=users_phones[fio]["email"]
+        email_differ = True
+
+  # почта из AD:
+  if "mail" in user:
+    if user["mail"] != drsk_email:
+      email_differ = True
 
   if description == "":
     description="-"
@@ -292,6 +305,8 @@ for account_name in users:
   if department == "":
     department="-"
 
+  if email_differ:
+    drsk_email = """<span class="banned">%s</span>""" % drsk_email
 
   print("""<TR>
      <TD id="cnt">%(index)d</TD>
