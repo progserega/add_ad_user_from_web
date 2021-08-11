@@ -20,7 +20,7 @@ def get_exception_traceback_descr(e):
       result+=msg
     return result
   else:
-    return e
+    return "unknown error"
  
 def get_users_phones_from_site():
   #  Начало 
