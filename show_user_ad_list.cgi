@@ -262,6 +262,7 @@ for account_name in users:
     if users_phones[fio]["email"] != "":
       if drsk_email != users_phones[fio]["email"]:
         # почта в приоритете с сайта:
+        log.add("1c != userdb: %s != %s"%(users_phones[fio]["email"],drsk_email))
         drsk_email=users_phones[fio]["email"]
         email_differ = True
 
@@ -269,6 +270,7 @@ for account_name in users:
   if "mail" in user:
     if user["mail"] != drsk_email:
       email_differ = True
+      log.add("ad != 1c: %s != %s"%(user["mail"],drsk_email))
 
   if description == "":
     description="-"
