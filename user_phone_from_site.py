@@ -6,10 +6,18 @@ import os
 import MySQLdb as mdb
 import config as conf
 import logger as log
+import traceback
 
 STATUS_SUCCESS=0
 STATUS_INTERNAL_ERROR=1
 STATUS_USER_EXIST=2
+ 
+def get_exception_traceback_descr(e):
+  tb_str = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+  result=""
+  for msg in tb_str:
+    result+=msg
+  return result
 
 def get_users_phones_from_site():
 #  Начало 
@@ -35,13 +43,18 @@ def get_users_phones_from_site():
 
 	for item in data:
 		user={}
-		fio=item[0].decode("cp1251").encode("utf-8")
-		user["fio"]=fio
-		user["phone"]=item[1]
-		user["job"]=item[2].decode("cp1251").encode("utf-8")
-		user["department"]=item[3].decode("cp1251").encode("utf-8")
-		user["email"]=item[4]
-		users_phones[fio]=user
+    try:
+      fio=item[0].decode("cp1251").encode("utf-8")
+      user["fio"]=fio
+      user["phone"]=item[1]
+      user["job"]=item[2].decode("cp1251").encode("utf-8")
+      user["department"]=item[3].decode("cp1251").encode("utf-8")
+      user["email"]=item[4]
+      users_phones[fio]=user
+    except Exception as e:
+      log.add(get_exception_traceback_descr(e))
+      log.add("skip record for user with email: %s"item[4])
+      continue
 
 	if con:    
 		con.close()
