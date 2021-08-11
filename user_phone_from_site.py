@@ -53,7 +53,7 @@ def get_users_phones_from_site():
       users_phones[fio]=user
     except Exception as e:
       log.add(get_exception_traceback_descr(e))
-      log.add("skip record for user with email: %s"item[4])
+      log.add("skip record for user with email: %s"%item[4])
       continue
 
   if con:    
