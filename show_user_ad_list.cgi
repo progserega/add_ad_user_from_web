@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import cgi
 import os
@@ -31,114 +31,114 @@ print("""
 <style type="text/css">
 tr:nth-child(even) {background: #DDD}
 tr:nth-child(odd) {background: #FFF}
-tr	{
-	text-align:center;
-	font-size: 0.835vw; //around 14px at 1920px
+tr  {
+  text-align:center;
+  font-size: 0.835vw; //around 14px at 1920px
 }
 #cnt {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
-}	
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
+}  
 #username {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #acc {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #pwd {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #desc {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #acc_drsk_email {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #pwd_drsk_email {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #acc_rsprim_email {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #pwd_rsprim_email {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #acc_status {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #hostname {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #cellphone {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #position {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #department {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #host_ip {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #host_os {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #host_os_ver {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #patches {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #creator_ip {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #created_time {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
 #creator_who {
-	border: 1px solid #8da1b5;
-	font-family: Tahoma;
-	color: #4f4f4f;
+  border: 1px solid #8da1b5;
+  font-family: Tahoma;
+  color: #4f4f4f;
 }
    .banned {
     color: red; /* Красный цвет выделения */

@@ -11,7 +11,7 @@ def add(text, debug=False):
   #outtext += u'\n' + (str(nowtime.strftime("%Y-%m-%d %H:%M:%S")) + ": " + text.decode('utf8'))
   outtext += (str(nowtime.strftime("%Y-%m-%d %H:%M:%S")) + ": " + text + u"\n")
   if debug:
-	  print outtext,
+    print(outtext)
   file_log_d = open(conf.log,'a')
   file_log_d.write(outtext.encode('utf8'))
   file_log_d.close()

@@ -3,7 +3,7 @@
 
 import sys
 import os
-import MySQLdb as mdb
+import pymysql
 import config as conf
 import logger as log
 import traceback
@@ -26,12 +26,12 @@ def get_users_phones_from_site():
   #  Начало 
   log.add("get_users_phones_from_site()")
   try:
-    con = mdb.connect(conf.user_phone_db_host, conf.user_phone_db_user, conf.user_phone_db_passwd, conf.user_phone_db_name);
+    con = pymysql.connect(conf.user_phone_db_host, conf.user_phone_db_user, conf.user_phone_db_passwd, conf.user_phone_db_name);
     cur = con.cursor()
-  except mdb.Error, e:
-    print "Error %d: %s" % (e.args[0],e.args[1])
-    log.add("error connect to mysql user phone db: %d: %s" % (e.args[0],e.args[1]))
-    sys.exit(1)
+  except Exception as e:
+    log.add("error mysql connect")
+    log.add(get_exception_traceback_descr(e))
+    return None
 
   users_phones={}
   sql="select name, phone, (select dolzh_name from ae_phone_dolzn where id=ae_phone_kadry.dolzh_id) as dolj, (select otdel_name from ae_phone_otdel where id=ae_phone_kadry.otdel1_id) as otdel,e_mail  from ae_phone_kadry"
@@ -39,10 +39,10 @@ def get_users_phones_from_site():
     cur.execute('SET NAMES cp1251')
     cur.execute(sql)
     data = cur.fetchall()
-  except mdb.Error, e:
-    print "Error %d: %s" % (e.args[0],e.args[1])
-    log.add("error connect to mysql user phone db: %d: %s" % (e.args[0],e.args[1]))
-    sys.exit(1)
+  except Exception as e:
+    log.add("error mysql execute")
+    log.add(get_exception_traceback_descr(e))
+    return None
 
   for item in data:
     user={}
