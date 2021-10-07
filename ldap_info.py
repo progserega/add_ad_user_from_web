@@ -66,14 +66,36 @@ def get_computers(ad):
     scope = ldap.SCOPE_SUBTREE
     filterexp = '(&(objectCategory=Computer)(objectClass=Computer)(cn=RSK40*))'
     attrlist = ['cn','description']
-    results = ad.search_s(basedn, scope, filterexp, attrlist)
-    for result in results:
-        comp={}
-        comp["name"]=result[1]['cn'][0]
-        comp["full_name"]="%s.drsk.rao-esv.ru" % result[1]['cn'][0].lower()
-        if "description" in result[1]:
-          comp["description"]=result[1]['description'][0]
-        comps[comp["name"]]=comp
+    page_size = 500 # how many users to search for in each page, this depends on the server maximum setting (default highest value is 1000)
+    req_ctrl = ldap.controls.libldap.SimplePagedResultsControl(criticality=True, size=page_size, cookie='')
+    msgid = ad.search_ext(basedn, scope, filterexp, attrlist,serverctrls=[req_ctrl])
+
+    total_results = []
+    pages = 0
+
+    while True: # loop over all of the pages using the same cookie, otherwise the search will fail
+      pages += 1
+      rtype, rdata, rmsgid, serverctrls = ad.result3(msgid)
+      for user in rdata:
+        total_results.append(user)
+
+      pctrls = [c for c in serverctrls if c.controlType == ldap.controls.libldap.SimplePagedResultsControl.controlType]
+      if pctrls:
+        if pctrls[0].cookie: # Copy cookie from response control to request control
+          req_ctrl.cookie = pctrls[0].cookie
+          msgid = ad.search_ext(basedn, scope, filterexp, attrlist,serverctrls=[req_ctrl])
+        else:
+          break
+      else:
+        break
+    log.debug("count of get computers=%d"%len(total_results))
+    for result in total_results:
+      comp={}
+      comp["name"]=result[1]['cn'][0].decode('utf-8')
+      comp["full_name"]="%s.drsk.ru" % result[1]['cn'][0].decode('utf-8').lower()
+      if "description" in result[1]:
+        comp["description"]=result[1]['description'][0].decode('utf-8')
+      comps[comp["name"]]=comp
     return comps
   except ldap.LDAPError as desc:
     log.error(desc)
@@ -115,7 +137,6 @@ def get_users(ad):
         break
     log.debug("count of get users=%d"%len(total_results))
     for result in total_results:
-      print(result)
       user={}
       user["account_name"]=result[1]['sAMAccountName'][0].decode('utf-8')
       user["attr"]=int(result[1]['userAccountControl'][0].decode('utf-8'))
