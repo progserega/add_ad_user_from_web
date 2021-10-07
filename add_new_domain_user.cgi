@@ -134,7 +134,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
   # добавляем, только если хоть что-то получилось на предыдущем этапе:
   if num_success_op!=0:
     num_op+=1
-    status = ad_user_db.add_ad_user(\
+    status = ad_user_db.add_ad_user(log,\
         name=user["name"], \
         familiya=user["familiya"],\
         otchestvo=user["otchestvo"], \

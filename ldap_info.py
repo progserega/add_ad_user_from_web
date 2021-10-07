@@ -5,6 +5,7 @@ import ldap
 import re
 import config as conf
 
+log = None
 ldap_url=conf.LDAP_SERVER
 ldap_user=conf.BIND_DN
 ldap_passwd=conf.BIND_PASS
@@ -20,12 +21,14 @@ TRUSTED_FOR_DELEGATION = 524288
 PASSWORD_EXPIRED = 8388608
 
 
-def init():
+def init(log_in):
   global ldap_url
   global ldap_user
   global ldap_passwd
-
+  global log
   try:
+    if log is None:
+      log = log_in
     # http:
     #ad = ldap.initialize(ldap_url)
     #ad.set_option(ldap.OPT_REFERRALS,0)
@@ -36,11 +39,13 @@ def init():
     ad = ldap.initialize(conf.LDAP_SERVER)
     ad.simple_bind_s(conf.BIND_DN, conf.BIND_PASS)
   except ldap.LDAPError as desc:
-    print("error", desc)
+    log.error(desc)
+    return None
   return ad
 
 
 def get_computers(ad):
+  global log
   comps={}
   try:
     #basedn = 'DC=drsk,DC=rao-esv,DC=ru'
@@ -49,9 +54,9 @@ def get_computers(ad):
     filterexp = '(&(objectCategory=Computer)(objectClass=Computer)(cn=RSK40*))'
     attrlist = ['cn','description']
     results = ad.search_s(basedn, scope, filterexp, attrlist)
-    #print(results)
   except ldap.LDAPError as desc:
-    print("error", desc)
+    log.error(desc)
+    return None
 
   for result in results:
       comp={}
@@ -63,6 +68,7 @@ def get_computers(ad):
   return comps
 
 def get_users(ad):
+  global log
   users={}
   try:
     #basedn = 'DC=drsk,DC=rao-esv,DC=ru'
@@ -73,10 +79,10 @@ def get_users(ad):
     #attrlist = ['cn']
     results = ad.search_s(basedn, scope, filterexp, attrlist)
   except ldap.LDAPError as desc:
-    print("error", desc)
+    log.error(desc)
+    return None
 
   for result in results:
-  #    print(result)
       user={}
       user["account_name"]=result[1]['sAMAccountName'][0]
       user["attr"]=int(result[1]['userAccountControl'][0])
@@ -100,12 +106,4 @@ def get_users(ad):
     #  for key in user:
     #    print("user: %s = %s" % (key, user[key]))
   return users
-
-#t=0
-#print("t=",t)
-#print("t=",t | 1 << 3)
-
-
-
-
 
