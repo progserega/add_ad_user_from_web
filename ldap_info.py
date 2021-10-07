@@ -4,6 +4,7 @@ import sys
 import ldap
 import re
 import config as conf
+import traceback
 
 log = None
 ldap_url=conf.LDAP_SERVER
@@ -20,6 +21,15 @@ DONT_EXPIRE_PASSWORD = 65536
 TRUSTED_FOR_DELEGATION = 524288
 PASSWORD_EXPIRED = 8388608
 
+def get_exception_traceback_descr(e):
+  if hasattr(e, '__traceback__'):
+    tb_str = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+    result=""
+    for msg in tb_str:
+      result+=msg
+    return result
+  else:
+    return e
 
 def init(log_in):
   global ldap_url
@@ -41,6 +51,9 @@ def init(log_in):
   except ldap.LDAPError as desc:
     log.error(desc)
     return None
+  except Exception as e:
+    log.error(get_exception_traceback_descr(e))
+    return None
   return ad
 
 
@@ -54,56 +67,74 @@ def get_computers(ad):
     filterexp = '(&(objectCategory=Computer)(objectClass=Computer)(cn=RSK40*))'
     attrlist = ['cn','description']
     results = ad.search_s(basedn, scope, filterexp, attrlist)
+    for result in results:
+        comp={}
+        comp["name"]=result[1]['cn'][0]
+        comp["full_name"]="%s.drsk.rao-esv.ru" % result[1]['cn'][0].lower()
+        if "description" in result[1]:
+          comp["description"]=result[1]['description'][0]
+        comps[comp["name"]]=comp
+    return comps
   except ldap.LDAPError as desc:
     log.error(desc)
     return None
-
-  for result in results:
-      comp={}
-      comp["name"]=result[1]['cn'][0]
-      comp["full_name"]="%s.drsk.rao-esv.ru" % result[1]['cn'][0].lower()
-      if "description" in result[1]:
-        comp["description"]=result[1]['description'][0]
-      comps[comp["name"]]=comp
-  return comps
+  except Exception as e:
+    log.error(get_exception_traceback_descr(e))
+    return None
 
 def get_users(ad):
   global log
   users={}
   try:
-    #basedn = 'DC=drsk,DC=rao-esv,DC=ru'
     basedn = conf.base_user_dn
     scope = ldap.SCOPE_SUBTREE
     filterexp = '(sAMAccountName=*)'
     attrlist = ['sAMAccountName','descrption','givenName','sn','mail','userWorkstations','initials','displayName','info','displayNamePrintable','canonicalName','ms-DS-UserAccountAutoLocked','msDS-UserAccountDisabled','msDS-UserDontExpirePassword','msDS-UserPasswordExpired','UserAccountControl','msDS-PhoneticLastName']
     #attrlist = ['cn']
-    results = ad.search_s(basedn, scope, filterexp, attrlist)
+    page_size = 500 # how many users to search for in each page, this depends on the server maximum setting (default highest value is 1000)
+    req_ctrl = ldap.controls.libldap.SimplePagedResultsControl(criticality=True, size=page_size, cookie='')
+    msgid = ad.search_ext(basedn, scope, filterexp, attrlist,serverctrls=[req_ctrl])
+
+    total_results = []
+    pages = 0
+
+    while True: # loop over all of the pages using the same cookie, otherwise the search will fail
+      pages += 1
+      rtype, rdata, rmsgid, serverctrls = ad.result3(msgid)
+      for user in rdata:
+        total_results.append(user)
+
+      pctrls = [c for c in serverctrls if c.controlType == ldap.controls.libldap.SimplePagedResultsControl.controlType]
+      if pctrls:
+        if pctrls[0].cookie: # Copy cookie from response control to request control
+          req_ctrl.cookie = pctrls[0].cookie
+          msgid = ad.search_ext(basedn, scope, filterexp, attrlist,serverctrls=[req_ctrl])
+        else:
+          break
+      else:
+        break
+    log.debug("count of get users=%d"%len(total_results))
+    for result in total_results:
+      print(result)
+      user={}
+      user["account_name"]=result[1]['sAMAccountName'][0].decode('utf-8')
+      user["attr"]=int(result[1]['userAccountControl'][0].decode('utf-8'))
+      if "givenName" in result[1]:
+        user["firstname"]=result[1]['givenName'][0].decode('utf-8')
+      if "description" in result[1]:
+        user["description"]=result[1]['description'][0].decode('utf-8')
+      if "sn" in result[1]:
+        user["secondname"]=result[1]['sn'][0].decode('utf-8')
+      if "mail" in result[1]:
+        user["mail"]=result[1]['mail'][0].decode('utf-8')
+      if "msDS-PhoneticLastName" in result[1]:
+        user["maiden_name"]=result[1]['msDS-PhoneticLastName'][0].decode('utf-8')
+      if "canonicalName" in result[1]:
+        user["full_name"]=re.sub(r'.*/','',result[1]['canonicalName'][0].decode('utf-8'))
   except ldap.LDAPError as desc:
     log.error(desc)
     return None
-
-  for result in results:
-      user={}
-      user["account_name"]=result[1]['sAMAccountName'][0]
-      user["attr"]=int(result[1]['userAccountControl'][0])
-      if "givenName" in result[1]:
-        user["firstname"]=result[1]['givenName'][0]
-      if "description" in result[1]:
-        user["description"]=result[1]['description'][0]
-      if "sn" in result[1]:
-        user["secondname"]=result[1]['sn'][0]
-      if "mail" in result[1]:
-        user["mail"]=result[1]['mail'][0]
-      if "msDS-PhoneticLastName" in result[1]:
-        user["maiden_name"]=result[1]['msDS-PhoneticLastName'][0]
-      if "canonicalName" in result[1]:
-        user["full_name"]=re.sub(r'.*/','',result[1]['canonicalName'][0])
-      users[user["account_name"]]=user
-
-    #  for key in result[1]:
-    #    print("%s = %s" %(key,result[1][key][0]))
-
-    #  for key in user:
-    #    print("user: %s = %s" % (key, user[key]))
+  except Exception as e:
+    log.error(get_exception_traceback_descr(e))
+    return None
   return users
-
