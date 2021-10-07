@@ -79,7 +79,14 @@ def get_computers(ad):
       for user in rdata:
         total_results.append(user)
 
-      pctrls = [c for c in serverctrls if c.controlType == ldap.controls.libldap.SimplePagedResultsControl.controlType]
+      # меняем сложное формирование списка:
+      #pctrls = [c for c in serverctrls if c.controlType == ldap.controls.libldap.SimplePagedResultsControl.controlType]
+      # на простое формирование списка:
+      pctrls = None
+      for item in serverctrls:
+        if item.controlType == ldap.controls.libldap.SimplePagedResultsControl.controlType:
+          pctrls = [item]
+
       if pctrls:
         if pctrls[0].cookie: # Copy cookie from response control to request control
           req_ctrl.cookie = pctrls[0].cookie
@@ -126,7 +133,14 @@ def get_users(ad):
       for user in rdata:
         total_results.append(user)
 
-      pctrls = [c for c in serverctrls if c.controlType == ldap.controls.libldap.SimplePagedResultsControl.controlType]
+      # меняем сложное формирование списка:
+      #pctrls = [c for c in serverctrls if c.controlType == ldap.controls.libldap.SimplePagedResultsControl.controlType]
+      # на простое формирование списка:
+      pctrls = None
+      for item in serverctrls:
+        if item.controlType == ldap.controls.libldap.SimplePagedResultsControl.controlType:
+          pctrls = [item]
+
       if pctrls:
         if pctrls[0].cookie: # Copy cookie from response control to request control
           req_ctrl.cookie = pctrls[0].cookie
