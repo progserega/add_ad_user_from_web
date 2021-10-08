@@ -601,7 +601,7 @@ if __name__ == '__main__':
     log.setLevel(logging.INFO)
 
   # create the logging file handler
-  fh = logging.handlers.TimedRotatingFileHandler(conf.log_path_bot, when=conf.log_backup_when, backupCount=conf.log_backup_count)
+  fh = logging.handlers.TimedRotatingFileHandler(conf.log_path, when=conf.log_backup_when, backupCount=conf.log_backup_count)
   formatter = logging.Formatter('%(asctime)s - %(name)s - %(filename)s:%(lineno)d - %(funcName)s() %(levelname)s - %(message)s')
   fh.setFormatter(formatter)
 

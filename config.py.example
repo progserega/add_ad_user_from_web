@@ -39,6 +39,21 @@ user_phone_db_passwd="secretpwd"
 send_report_to=["admin1@company.ru", "admin2@company.ru"]
 send_report_from="admin@company.ru"
 
-#DEBUG=True
-DEBUG=False
-log="/var/log/add_user_to_ad.log"
+# выбор филиала в виде radiobuttom:
+ou={}
+ou["filial1"]=u"Компания Филиал1"
+ou["filial2"]=u"Компания Филиал2"
+
+#========= Global ===========
+log_path="/var/log/add_user_to_ad.log"
+# how match keep backup log files:
+log_backup_count=30
+# can be:
+# 'S' - Seconds
+# 'M' - Minutes
+# 'H' - Hours
+# 'D' - Days
+# 'W0'-'W6' - Weekday (0=Monday)
+# 'midnight' - Roll over at midnight
+log_backup_when='midnight'
+debug=True
