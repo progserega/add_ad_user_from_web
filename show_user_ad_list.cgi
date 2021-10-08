@@ -178,8 +178,10 @@ def main():
     return False
   users_from_db=ad_user_db.get_ad_user_list_by_login(log)
   users_from_db_fio=ad_user_db.get_ad_user_list_by_fio(log)
-  users_phones=user_phone_from_site.get_users_phones_from_site()
-
+  users_phones=user_phone_from_site.get_users_phones_from_site(log)
+  if users_phones is None:
+    log.error("user_phone_from_site.get_users_phones_from_site(log)")
+    return False
 
   print("""
       <TABLE BORDER>
