@@ -39,11 +39,6 @@ user_phone_db_passwd="secretpwd"
 send_report_to=["admin1@company.ru", "admin2@company.ru"]
 send_report_from="admin@company.ru"
 
-# выбор филиала в виде radiobuttom:
-ou={}
-ou["filial1"]=u"Компания Филиал1"
-ou["filial2"]=u"Компания Филиал2"
-
 #========= Global ===========
 log_path="/var/log/add_user_to_ad.log"
 # how match keep backup log files:
