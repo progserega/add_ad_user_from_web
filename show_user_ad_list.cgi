@@ -153,10 +153,13 @@ def main():
      .banned {
       color: red; /* Красный цвет выделения */
      }
-     .selected_node {
+     .constant {
       color: green; /* Зелёный цвет выделения */
-    background: #D9FFAD;
-    font-size: 150%;
+      background: #D9FFAD;
+      font-size: 150%;
+     }
+     .normal {
+      color: black; 
      }
   </style>
 
@@ -229,6 +232,8 @@ def main():
 
     if status != "Нормальный":
       html_status="""<span class="banned">%s</span>""" % status
+    if "Нормальный" in status and "Не требующий замены" in status:
+      html_status="""<span class="constant">%s</span>""" % status
     else:
       html_status="""<span class="normal">%s</span>""" % status
 
