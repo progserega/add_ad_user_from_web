@@ -530,7 +530,11 @@ def main():
     print("""<TR>
        <TD id="cnt">%(index)d</TD>
        <TD id="username">%(full_name)s</TD>
-       <TD id="acc">%(account_name)s</TD>
+       <TD id="acc">
+        <a target="_self" href="https://arm-sit.rs.int/index.php?AdUsersSearch%5Bfio%5D=&AdUsersSearch%5Bold_familiya%5D=&AdUsersSearch%5Blogin%5D=%(account_name)s&AdUsersSearch%5Bpasswd%5D=&AdUsersSearch%5Bdrsk_email%5D=&AdUsersSearch%5Brsprim_email%5D=&AdUsersSearch%5Badd_time%5D=&AdUsersSearch%5Badd_user_name%5D=&r=ad-users%2Findex">
+          %(account_name)s
+        </a>
+       </TD>
        <TD id="pwd">%(passwd)s</TD>
        <TD id="desc">%(description)s</TD>
        <TD id="acc_drsk_email">%(drsk_email)s</TD>
