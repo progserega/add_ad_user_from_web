@@ -339,7 +339,7 @@ def main():
        <TD id="cnt">%(index)d</TD>
        <TD id="username">%(full_name)s</TD>
        <TD id="acc">
-        <a target="_self" href="https://arm-sit.rs.int/index.php?AdUsersSearch%5Bfio%5D=&AdUsersSearch%5Bold_familiya%5D=&AdUsersSearch%5Blogin%5D=%(account_name)s&AdUsersSearch%5Bpasswd%5D=&AdUsersSearch%5Bdrsk_email%5D=&AdUsersSearch%5Brsprim_email%5D=&AdUsersSearch%5Badd_time%5D=&AdUsersSearch%5Badd_user_name%5D=&r=ad-users%2Findex">
+        <a target="_self" href="https://arm-sit.rs.int/index.php?AdUsersSearch[fio]=&AdUsersSearch[old_familiya]=&AdUsersSearch[login]=%(account_name)s&AdUsersSearch[passwd]=&AdUsersSearch[drsk_email]=&AdUsersSearch[rsprim_email]=&AdUsersSearch[add_time]=&AdUsersSearch[add_user_name]=&r=ad-users%%2Findex">
           %(account_name)s
         </a>
        </TD>
@@ -535,7 +535,7 @@ def main():
        <TD id="cnt">%(index)d</TD>
        <TD id="username">%(full_name)s</TD>
        <TD id="acc">
-        <a target="_self" href="https://arm-sit.rs.int/index.php?AdUsersSearch%5Bfio%5D=&AdUsersSearch%5Bold_familiya%5D=&AdUsersSearch%5Blogin%5D=%(account_name)s&AdUsersSearch%5Bpasswd%5D=&AdUsersSearch%5Bdrsk_email%5D=&AdUsersSearch%5Brsprim_email%5D=&AdUsersSearch%5Badd_time%5D=&AdUsersSearch%5Badd_user_name%5D=&r=ad-users%2Findex">
+        <a target="_self" href="https://arm-sit.rs.int/index.php?AdUsersSearch[fio]=&AdUsersSearch[old_familiya]=&AdUsersSearch[login]=%(account_name)s&AdUsersSearch[passwd]=&AdUsersSearch[drsk_email]=&AdUsersSearch[rsprim_email]=&AdUsersSearch[add_time]=&AdUsersSearch[add_user_name]=&r=ad-users%%2Findex">
           %(account_name)s
         </a>
        </TD>
