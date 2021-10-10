@@ -166,6 +166,8 @@ def get_users(ad):
         user["maiden_name"]=result[1]['msDS-PhoneticLastName'][0].decode('utf-8')
       if "canonicalName" in result[1]:
         user["full_name"]=re.sub(r'.*/','',result[1]['canonicalName'][0].decode('utf-8'))
+      users[user["account_name"]]=user
+
   except ldap.LDAPError as desc:
     log.error(desc)
     return None
