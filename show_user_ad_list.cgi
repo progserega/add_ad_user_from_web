@@ -231,7 +231,7 @@ def main():
 
     if "Заблокирован" in status:
       html_status="""<span class="banned">%s</span>""" % status
-    else if "Нормальный" in status and "Не требующий замены" in status:
+    elif "Нормальный" in status and "Не требующий замены" in status:
       html_status="""<span class="constant">%s</span>""" % status
     else:
       html_status="""<span class="normal">%s</span>""" % status
