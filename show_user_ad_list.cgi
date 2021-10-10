@@ -156,7 +156,6 @@ def main():
      .constant {
       color: green; /* Зелёный цвет выделения */
       background: #D9FFAD;
-      font-size: 150%;
      }
      .normal {
       color: black; 
@@ -230,9 +229,9 @@ def main():
     if user["attr"] & ad.NORMAL_ACCOUNT:
       status=status+"Нормальный"
 
-    if status != "Нормальный":
+    if "Заблокирован" in status:
       html_status="""<span class="banned">%s</span>""" % status
-    if "Нормальный" in status and "Не требующий замены" in status:
+    else if "Нормальный" in status and "Не требующий замены" in status:
       html_status="""<span class="constant">%s</span>""" % status
     else:
       html_status="""<span class="normal">%s</span>""" % status
