@@ -54,3 +54,5 @@ log_backup_count=30
 # 'midnight' - Roll over at midnight
 log_backup_when='midnight'
 debug=True
+# отладка в консоли:
+console=False
