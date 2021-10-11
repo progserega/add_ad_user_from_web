@@ -11,11 +11,14 @@ import sys
 from ldap.controls import SimplePagedResultsControl
 import ldap.modlist as modlist
 import config as conf
-import logger as log
+import logging
+from logging import handlers
 import user_ad_postgres_db as ad_user_db
 import add_to_email_db as email_db
 import sendemail
+import traceback
 
+log = None
 SCRIPT = 1
 ACCOUNTDISABLE = 2
 HOMEDIR_REQUIRED = 8
@@ -41,6 +44,7 @@ def get_exception_traceback_descr(e):
     return e
 
 def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name, user):
+  global log
   num_op=0
   num_success_op=0
   full_status={}
@@ -75,7 +79,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
   user["email_server2"]=email_server2
   user["description"]=description
   num_op+=1
-  status=CreateADUser(login, passwd, name.encode('utf8'), fam.encode('utf8'), otch.encode('utf8'), description.encode('utf8'), email_server1, conf.default_groups[ou_name]["name"].encode('utf8'), groups=conf.default_groups[ou_name]["groups"],domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base)
+  status=CreateADUser(login, passwd, name, fam, otch, description, email_server1, conf.default_groups[ou_name]["name"], groups=conf.default_groups[ou_name]["groups"],domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base)
   if status == STATUS_SUCCESS:
     num_success_op+=1
     print("""<p><span class='success'>УСПЕШНО</span> заведён пользователь %s в домене""" % login.encode('utf8'))
@@ -99,7 +103,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
     log.info("NOTICE: conf.db_email_server1_passwd is not defined - skip add email to server1")
   if create_email:
     num_op+=1
-    status=email_db.add_user_to_exim_db(db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=conf.email_server1_domain, email_passwd=passwd, email_descr=fio.encode('utf8'))
+    status=email_db.add_user_to_exim_db(log,db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=conf.email_server1_domain, email_passwd=passwd, email_descr=fio.encode('utf8'))
     if status == STATUS_SUCCESS:
       log.info("SUCCESS add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
       print("""<p><span class='success'>УСПЕШНО</span> заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
@@ -123,7 +127,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
 
   if create_email:
     num_op+=1
-    status=email_db.add_user_to_exim_db(db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=passwd, email_descr=fio.encode('utf8'))
+    status=email_db.add_user_to_exim_db(log,db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=passwd, email_descr=fio.encode('utf8'))
     if status == STATUS_SUCCESS:
       log.info("SUCCESS add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
       print("""<p><span class='success'>УСПЕШНО</span> заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
@@ -255,171 +259,169 @@ login: %(login)s, passwd: '%(passwd)s', email_server1: %(email_server1)s, email_
 
 
 def CreateADUser(username, password, name, familiya, otchestvo, description, email, company, groups,domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base):
-  t
-    #Create a new user account in Active Directory.
+  #Create a new user account in Active Directory.
+  try:
+    fname=name
+    lname=familiya
+
+    # LDAP connection
     try:
-      fname=name
-      lname=familiya
+      # без ssl:
+      #ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, 0)
+      #ldap_connection = ldap.initialize(LDAP_SERVER)
 
-      # LDAP connection
+      # ssl:
+      #ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+      #ldap_connection = ldap.initialize(LDAP_SERVER)
+      #ldap_connection.set_option(ldap.OPT_REFERRALS, 0)
+      #ldap_connection.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
+      #ldap_connection.set_option(ldap.OPT_X_TLS,ldap.OPT_X_TLS_DEMAND)
+      #ldap_connection.set_option( ldap.OPT_X_TLS_DEMAND, True )
+      #ldap_connection.set_option( ldap.OPT_DEBUG_LEVEL, 255 )
+      ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+      ldap_connection = ldap.initialize(conf.LDAP_SERVER)
+      ldap_connection.simple_bind_s(conf.BIND_DN, conf.BIND_PASS)
+    except ldap.LDAPError as desc:
+      log.error(desc)
+      return None
+    except Exception as e:
+      log.error(get_exception_traceback_descr(e))
+      return None
+
+    # Check and see if user exists
+    try:
+      user_results = ldap_connection.search_s(base_dn, ldap.SCOPE_SUBTREE,
+        '(&(sAMAccountName=' +
+        username +
+        ')(objectClass=person))',
+        ['distinguishedName'])
+    except ldap.LDAPError as desc:
+      log.error("Error finding username: %s" % desc)
+      return STATUS_INTERNAL_ERROR
+
+    # Check the results
+    if len(user_results) != 0:
+      log.warning("User %s already exists in AD:" % username )
+  #print "User", username, "already exists in AD:", \
+      user_results[0][1]['distinguishedName'][0]
+      return STATUS_USER_EXIST
+
+    # Lets build our user: Disabled to start (514)
+    user_dn = 'cn=' + fname + ' ' + lname + ',' + base_dn
+    user_attrs = {}
+    user_attrs['objectClass'] = \
+    [b'top', b'person', b'organizationalPerson', b'user']
+    user_attrs['cn'] = (fname + ' ' + lname).encode('utf8')
+    #user_attrs['cn'] = (familiya + ' ' + name + ' ' + otchestvo).encode('utf8')
+    user_attrs['userPrincipalName'] = (username + '@' + domain).encode('utf8')
+    user_attrs['sAMAccountName'] = username.encode('utf8')
+    user_attrs['givenName'] = fname.encode('utf8')
+    user_attrs['sn'] = lname.encode('utf8')
+    user_attrs['displayName'] = (familiya + ' ' + name + ' ' + otchestvo).encode('utf8')
+    # Наименование в списке просмотра пользователей через виндовый интерфейс:
+    user_attrs['name'] = (familiya + ' ' + name + ' ' + otchestvo).encode('utf8')
+    user_attrs['description'] = description.encode('utf8')
+    user_attrs['company'] = company.encode('utf8')
+    #user_attrs['userAccountControl'] = '514'
+    user_attrs['userAccountControl'] = ("%d" % (NORMAL_ACCOUNT + DONT_EXPIRE_PASSWORD + ACCOUNTDISABLE)).encode('utf8')
+    #user_attrs['mail'] = username + '@host.com'
+    user_attrs['employeeID'] = employee_num.encode('utf8')
+    #user_attrs['homeDirectory'] = '\\\\server\\' + username
+    #user_attrs['homeDrive'] = 'H:'
+    #user_attrs['scriptPath'] = 'logon.vbs'
+    user_ldif = modlist.addModlist(user_attrs)
+
+    # Prep the password
+    #unicode_pass = unicode('\"' + password + '\"', 'iso-8859-1')
+    #password_value = unicode_pass.encode('utf-16-le')
+    unicode_pass = '\"' + password + '\"'
+    password_value = unicode_pass.encode('utf-16-le')
+    #password_value = unicode_pass.getBytes("UTF-16LE")
+    add_pass = [(ldap.MOD_REPLACE, 'unicodePwd', [password_value])]
+    # 512 will set user account to enabled
+    mod_acct = [(ldap.MOD_REPLACE, 'userAccountControl', ("%d" % ( NORMAL_ACCOUNT + DONT_EXPIRE_PASSWORD)).encode('utf8') )]
+    # New group membership
+    add_member = [(ldap.MOD_ADD, 'member', user_dn.encode('utf8'))]
+    #mod_pgid = [(ldap.MOD_REPLACE, 'primaryGroupID', GROUP_TOKEN)]
+    # Delete the Domain Users group membership
+    #del_member = [(ldap.MOD_DELETE, 'member', user_dn)]
+
+    #unicode_email = unicode(email, 'iso-8859-1')
+    email_value = email.encode('utf-16-le')
+    #email_value = email.getBytes("UTF-16LE")
+    mod_email = [(ldap.MOD_REPLACE, 'mail', email_value)]
+
+    # Add the new user account
+    try:
+      ldap_connection.add_s(user_dn, user_ldif)
+    except ldap.LDAPError as desc:
+      log.error("Error adding new user: %s" % desc)
+      return STATUS_INTERNAL_ERROR
+
+    # Add the password
+    try:
+      ldap_connection.modify_s(user_dn, add_pass)
+    except ldap.LDAPError as error_message:
+      log.error("Error setting password: %s" % error_message)
+      return STATUS_INTERNAL_ERROR
+
+    # Change the account back to enabled
+    try:
+      ldap_connection.modify_s(user_dn, mod_acct)
+    except ldap.LDAPError as error_message:
+      log.error("Error enabling user: %s" % error_message)
+      return STATUS_INTERNAL_ERROR
+
+    # mod the email:
+    try:
+      ldap_connection.modify_s(user_dn, mod_email)
+    except ldap.LDAPError as error_message:
+      log.error("Error modify email: %s" % error_message)
+      return STATUS_INTERNAL_ERROR
+
+    # Add user to their primary group
+    for group in groups:
+      if re.search("^rbl.*", group.lower()) is not None:
+        GROUP_DN="CN="+group+","+ group_rbl_base
+      elif re.search("^acl.*", group.lower()) is not None:
+        GROUP_DN="CN="+group+","+ group_acl_base
+      else:
+        log.error(u"Error adding user to group: %s - group must begin from 'ACL' or 'RBL'! - skip this group" % group)
+        continue
       try:
-        # без ssl:
-        #ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, 0)
-        #ldap_connection = ldap.initialize(LDAP_SERVER)
-
-        # ssl:
-        #ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
-        #ldap_connection = ldap.initialize(LDAP_SERVER)
-        #ldap_connection.set_option(ldap.OPT_REFERRALS, 0)
-        #ldap_connection.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
-        #ldap_connection.set_option(ldap.OPT_X_TLS,ldap.OPT_X_TLS_DEMAND)
-        #ldap_connection.set_option( ldap.OPT_X_TLS_DEMAND, True )
-        #ldap_connection.set_option( ldap.OPT_DEBUG_LEVEL, 255 )
-        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
-        ldap_connection = ldap.initialize(conf.LDAP_SERVER)
-        ldap_connection.simple_bind_s(conf.BIND_DN, conf.BIND_PASS)
-      except ldap.LDAPError as desc:
-        log.error(desc)
-        return None
-      except Exception as e:
-        log.error(get_exception_traceback_descr(e))
-        return None
-
-      # Check and see if user exists
-      try:
-        user_results = ldap_connection.search_s(base_dn, ldap.SCOPE_SUBTREE,
-          '(&(sAMAccountName=' +
-          username +
-          ')(objectClass=person))',
-          ['distinguishedName'])
-      except ldap.LDAPError as desc:
-        log.error("Error finding username: %s" % desc)
-        return STATUS_INTERNAL_ERROR
-
-      # Check the results
-      if len(user_results) != 0:
-        log.warning("User %s already exists in AD:" % username )
-    #print "User", username, "already exists in AD:", \
-        user_results[0][1]['distinguishedName'][0]
-        return STATUS_USER_EXIST
-
-      # Lets build our user: Disabled to start (514)
-      user_dn = 'cn=' + fname + ' ' + lname + ',' + base_dn
-      user_attrs = {}
-      user_attrs['objectClass'] = \
-      ['top', 'person', 'organizationalPerson', 'user']
-      user_attrs['cn'] = fname + ' ' + lname
-    #user_attrs['cn'] = familiya + ' ' + name + ' ' + otchestvo
-      user_attrs['userPrincipalName'] = username + '@' + domain
-      user_attrs['sAMAccountName'] = username
-      user_attrs['givenName'] = fname
-      user_attrs['sn'] = lname
-      user_attrs['displayName'] = familiya + ' ' + name + ' ' + otchestvo
-      # Наименование в списке просмотра пользователей через виндовый интерфейс:
-      user_attrs['name'] = familiya + ' ' + name + ' ' + otchestvo
-      user_attrs['description'] = description
-      user_attrs['company'] = company
-      #user_attrs['userAccountControl'] = '514'
-      user_attrs['userAccountControl'] = "%d" % (NORMAL_ACCOUNT + DONT_EXPIRE_PASSWORD + ACCOUNTDISABLE)
-      #user_attrs['mail'] = username + '@host.com'
-      user_attrs['employeeID'] = employee_num
-      #user_attrs['homeDirectory'] = '\\\\server\\' + username
-      #user_attrs['homeDrive'] = 'H:'
-      #user_attrs['scriptPath'] = 'logon.vbs'
-      user_ldif = modlist.addModlist(user_attrs)
-
-      # Prep the password
-      unicode_pass = unicode('\"' + password + '\"', 'iso-8859-1')
-      password_value = unicode_pass.encode('utf-16-le')
-      #password_value = unicode_pass.encode('utf-16').lstrip('\377\376')
-      add_pass = [(ldap.MOD_REPLACE, 'unicodePwd', [password_value])]
-      # 512 will set user account to enabled
-      mod_acct = [(ldap.MOD_REPLACE, 'userAccountControl', "%d" % ( NORMAL_ACCOUNT + DONT_EXPIRE_PASSWORD) )]
-      #mod_acct = [(ldap.MOD_REPLACE, 'userAccountControl', "512" )]
-      # New group membership
-      add_member = [(ldap.MOD_ADD, 'member', user_dn)]
-      # Replace the primary group ID
-      #mod_pgid = [(ldap.MOD_REPLACE, 'primaryGroupID', GROUP_TOKEN)]
-      # Delete the Domain Users group membership
-      #del_member = [(ldap.MOD_DELETE, 'member', user_dn)]
-
-    #unicode_email = unicode('\"' + email + '\"', 'iso-8859-1')
-      unicode_email = unicode(email, 'iso-8859-1')
-      email_value = unicode_email.encode('utf-16-le')
-    #mod_email = [(ldap.MOD_REPLACE, 'mail', [email_value])]
-      mod_email = [(ldap.MOD_REPLACE, 'mail', email)]
-
-      # Add the new user account
-      try:
-        ldap_connection.add_s(user_dn, user_ldif)
-      except ldap.LDAPError as desc:
-        log.error("Error adding new user: %s" % desc)
-        return STATUS_INTERNAL_ERROR
-
-      # Add the password
-      try:
-        ldap_connection.modify_s(user_dn, add_pass)
+        ldap_connection.modify_s(GROUP_DN, add_member)
       except ldap.LDAPError as error_message:
-        log.error("Error setting password: %s" % error_message)
-        return STATUS_INTERNAL_ERROR
+        log.error("Error adding user to group: %s" % error_message)
+        log.error("Error groups: %s" % GROUP_DN)
 
-      # Change the account back to enabled
-      try:
-        ldap_connection.modify_s(user_dn, mod_acct)
-      except ldap.LDAPError as error_message:
-        log.error("Error enabling user: %s" % error_message)
-        return STATUS_INTERNAL_ERROR
+    
 
-      # mod the email:
-      try:
-        ldap_connection.modify_s(user_dn, mod_email)
-      except ldap.LDAPError as error_message:
-        log.error("Error modify email: %s" % error_message)
-        return STATUS_INTERNAL_ERROR
+    # Modify user's primary group ID
+    #try:
+    #    ldap_connection.modify_s(user_dn, mod_pgid)
+    #except ldap.LDAPError, error_message:
+    #    print "Error changing user's primary group: %s" % error_message
+    #    return False
 
-      # Add user to their primary group
-      for group in groups:
-        if re.search("^rbl.*", group.lower()) is not None:
-          GROUP_DN="CN="+group+","+ group_rbl_base
-        elif re.search("^acl.*", group.lower()) is not None:
-          GROUP_DN="CN="+group+","+ group_acl_base
-        else:
-          log.error(u"Error adding user to group: %s - group must begin from 'ACL' or 'RBL'! - skip this group" % group)
-          continue
-        try:
-          ldap_connection.modify_s(GROUP_DN, add_member)
-        except ldap.LDAPError as error_message:
-          log.error("Error adding user to group: %s" % error_message)
-          log.error("Error groups: %s" % GROUP_DN)
+    # Remove user from the Domain Users group
+    #try:
+    #    ldap_connection.modify_s(DU_GROUP_DN, del_member)
+    #except ldap.LDAPError, error_message:
+    #    print "Error removing user from group: %s" % error_message
+    #    return False
 
-      
+    # LDAP unbind
+    ldap_connection.unbind_s()
 
-      # Modify user's primary group ID
-      #try:
-      #    ldap_connection.modify_s(user_dn, mod_pgid)
-      #except ldap.LDAPError, error_message:
-      #    print "Error changing user's primary group: %s" % error_message
-      #    return False
+    # Setup user's home directory
+    #os.system('mkdir -p /home/' + username + '/public_html')
+    #os.system('cp /etc/skel/.bashrc /etc/skel/.bash_profile ' +
+    #          '/etc/skel/.bash_logout /home/' + username)
+    #os.system('chown -R ' + username + ' /home/' + username)
+    #os.system('chmod 0701 /home/' + username)
 
-      # Remove user from the Domain Users group
-      #try:
-      #    ldap_connection.modify_s(DU_GROUP_DN, del_member)
-      #except ldap.LDAPError, error_message:
-      #    print "Error removing user from group: %s" % error_message
-      #    return False
-
-      # LDAP unbind
-      ldap_connection.unbind_s()
-
-      # Setup user's home directory
-      #os.system('mkdir -p /home/' + username + '/public_html')
-      #os.system('cp /etc/skel/.bashrc /etc/skel/.bash_profile ' +
-      #          '/etc/skel/.bash_logout /home/' + username)
-      #os.system('chown -R ' + username + ' /home/' + username)
-      #os.system('chmod 0701 /home/' + username)
-
-      # All is good
-      return STATUS_SUCCESS
+    # All is good
+    return STATUS_SUCCESS
   except Exception as e:
     log.error(get_exception_traceback_descr(e))
     return STATUS_INTERNAL_ERROR
@@ -429,7 +431,7 @@ def get_passwd():
     t = subprocess.Popen(("pwgen","-s" ,"8", "1"), stderr=subprocess.PIPE,stdout=subprocess.PIPE)
     ret_code=t.wait()
     t_stdout_list=t.stdout.readlines()
-    return t_stdout_list[0].strip('\n')
+    return t_stdout_list[0].decode('utf8').strip('\n')
   except Exception as e:
     log.error(get_exception_traceback_descr(e))
     return None
@@ -531,12 +533,12 @@ def rus2en(string):
 def main():
   try:
     if conf.console:
-      user_familia = u"Фамилия"
-      user_name = u"Имя"
-      user_otchestvo = u"Отчество"
-      user_description = u"(А - для сортировки) описание"
+      user_familia = "Фамилия"
+      user_name = "Имя"
+      user_otchestvo = "Отчество"
+      user_description = "(А - для сортировки) описание"
       user_addr="DEBUG - empty"
-      ou_name = u"filial"
+      ou_name = "filial"
       web_user_name="DEBUG script in console"
       web_user_agent="console"
       web_user_addr="127.0.0.1"
