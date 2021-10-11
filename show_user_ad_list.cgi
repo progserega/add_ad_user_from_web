@@ -11,6 +11,16 @@ import config as conf
 import user_phone_from_site
 
 log = None
+
+# Some flags for userAccountControl property
+SCRIPT = 1
+ACCOUNTDISABLE = 2
+HOMEDIR_REQUIRED = 8
+PASSWD_NOTREQD = 32
+NORMAL_ACCOUNT = 512
+DONT_EXPIRE_PASSWORD = 65536
+TRUSTED_FOR_DELEGATION = 524288
+PASSWORD_EXPIRED = 8388608
 web_user_agent=os.getenv("HTTP_USER_AGENT")
 web_user_addr=os.getenv("REMOTE_ADDR")
 web_user_host=os.getenv("REMOTE_HOST")
@@ -589,16 +599,6 @@ def main():
   </html>
   """)
 
-
-# Some flags for userAccountControl property
-SCRIPT = 1
-ACCOUNTDISABLE = 2
-HOMEDIR_REQUIRED = 8
-PASSWD_NOTREQD = 32
-NORMAL_ACCOUNT = 512
-DONT_EXPIRE_PASSWORD = 65536
-TRUSTED_FOR_DELEGATION = 524288
-PASSWORD_EXPIRED = 8388608
 
 if __name__ == '__main__':
   log=logging.getLogger("show_user_ad_list")
