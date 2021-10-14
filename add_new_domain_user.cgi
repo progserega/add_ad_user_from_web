@@ -655,7 +655,7 @@ if __name__ == '__main__':
   formatter = logging.Formatter('%(asctime)s - %(name)s - %(filename)s:%(lineno)d - %(funcName)s() %(levelname)s - %(message)s')
   fh.setFormatter(formatter)
 
-  if conf.debug:
+  if conf.console:
     # логирование в консоль:
     stdout = logging.StreamHandler(sys.stdout)
     stdout.setFormatter(formatter)
