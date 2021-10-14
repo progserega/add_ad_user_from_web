@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# по умолчанию блокируем запуск скрипта добавления пользователя в домен и в почту:
+allow_add_users = "no"
+
 LDAP_SERVER = "ldaps://domaincontroller.company.ru:636"
 BIND_DN = "admin_login@company.ru"
 BIND_PASS = "admin_passwd"
