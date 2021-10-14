@@ -532,6 +532,10 @@ def rus2en(string):
 # ========== main ==============
 def main():
   try:
+    if conf.allow_add_users != "yes":
+      log.warning("configuration is block run adding users! Skip running! Exit!")
+      return True
+
     if conf.console:
       user_familia = "Фамилия"
       user_name = "Имя"
