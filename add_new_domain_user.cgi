@@ -554,6 +554,8 @@ def main():
       web_user_addr=os.getenv("REMOTE_ADDR")
       web_user_host=os.getenv("REMOTE_HOST")
       web_user_name=os.getenv('AUTHENTICATE_SAMACCOUNTNAME')
+      if web_user_name is None:
+        web_user_name=os.getenv('REMOTE_USER')
 
       print("""
       <html>
