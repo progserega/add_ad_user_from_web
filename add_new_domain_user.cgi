@@ -601,15 +601,15 @@ def main():
 
       # Поле 'work_sites_regex' содержит не пустое значение:
       if 'user_familia' in form and 'user_name' in form and 'user_otchestvo' in form and 'user_description' in form:
-        user_familia = u"%s" % cgi.escape(form['user_familia'].value)
-        user_name = u"%s" % cgi.escape(form['user_name'].value)
-        user_otchestvo = u"%s" % cgi.escape(form['user_otchestvo'].value)
-        user_description = u"%s" % cgi.escape(form['user_description'].value)
+        user_familia = "%s" % cgi.escape(form['user_familia'].value)
+        user_name = "%s" % cgi.escape(form['user_name'].value)
+        user_otchestvo = "%s" % cgi.escape(form['user_otchestvo'].value)
+        user_description = "%s" % cgi.escape(form['user_description'].value)
       else:
         print("Необходимо заполнить все поля")
         print("</body></html>")
         return False
-      ou_name = u"%s" % cgi.escape(form['ou_name'].value.decode('utf8'))
+      ou_name = "%s" % cgi.escape(form['ou_name'].value)
     log.info("try create user: %s, %s, %s, %s" % (user_familia, user_name, user_otchestvo, user_description) )
 
     # Обрабатываем ФИО - добавляем пользователя и выводим на экран результат:
