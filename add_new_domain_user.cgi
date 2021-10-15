@@ -601,10 +601,10 @@ def main():
 
       # Поле 'work_sites_regex' содержит не пустое значение:
       if 'user_familia' in form and 'user_name' in form and 'user_otchestvo' in form and 'user_description' in form:
-        user_familia = u"%s" % cgi.escape(form['user_familia'].value.decode('utf8'))
-        user_name = u"%s" % cgi.escape(form['user_name'].value.decode('utf8'))
-        user_otchestvo = u"%s" % cgi.escape(form['user_otchestvo'].value.decode('utf8'))
-        user_description = u"%s" % cgi.escape(form['user_description'].value.decode('utf8'))
+        user_familia = u"%s" % cgi.escape(form['user_familia'].value)
+        user_name = u"%s" % cgi.escape(form['user_name'].value)
+        user_otchestvo = u"%s" % cgi.escape(form['user_otchestvo'].value)
+        user_description = u"%s" % cgi.escape(form['user_description'].value)
       else:
         print("Необходимо заполнить все поля")
         print("</body></html>")
