@@ -44,7 +44,7 @@ def add_user_to_exim_db(log_in, db_host, db_name, db_user, db_passwd, email_pref
        % {\
          "username":pymysql.escape_string(email_prefix + "@" + email_domain) \
        }
-    log.debug("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql.decode('utf8'))
+    log.debug("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql)
     cur.execute(sql)
     result=cur.fetchall()
   except pymysql.Error as e:
@@ -66,7 +66,7 @@ def add_user_to_exim_db(log_in, db_host, db_name, db_user, db_passwd, email_pref
          "local_part":pymysql.escape_string(email_prefix), \
          "domain":pymysql.escape_string(email_domain) \
        }
-    log.debug("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql.decode('utf8'))
+    log.debug("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql)
     cur.execute(sql)
     con.commit()
   except pymysql.Error as e:
@@ -81,7 +81,7 @@ def add_user_to_exim_db(log_in, db_host, db_name, db_user, db_passwd, email_pref
          "goto":email_prefix + "@" + email_domain, \
          "domain":email_domain \
        }
-    log.debug("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql.decode('utf8'))
+    log.debug("add_to_email_db.py add_user_to_exim_db() exec sql: %s" % sql)
     cur.execute(sql)
     con.commit()
   except pymysql.Error as e:
