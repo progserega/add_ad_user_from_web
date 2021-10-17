@@ -43,7 +43,7 @@ def get_exception_traceback_descr(e):
   else:
     return e
 
-def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name, user):
+def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name, user,web_user_name,web_user_addr):
   global log
   num_op=0
   num_success_op=0
@@ -82,7 +82,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
   status=CreateADUser(login, passwd, name, fam, otch, description, email_server1, conf.default_groups[ou_name]["name"], groups=conf.default_groups[ou_name]["groups"],domain=conf.domain, employee_num="1",base_dn=conf.base_user_dn,group_acl_base=conf.group_acl_base, group_rbl_base=conf.group_rbl_base)
   if status == STATUS_SUCCESS:
     num_success_op+=1
-    print("""<p><span class='success'>УСПЕШНО</span> заведён пользователь %s в домене""" % login.encode('utf8'))
+    print("""<p><span class='success'>УСПЕШНО</span> заведён пользователь %s в домене""" % login)
     log.info("""SUCCESS - успешно заведенна учётная запись '%s' в домене""" % login) 
     full_status["создание пользователя в домене"]="успешно"
   elif status == STATUS_USER_EXIST:
@@ -127,7 +127,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
 
   if create_email:
     num_op+=1
-    status=email_db.add_user_to_exim_db(log,db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=passwd, email_descr=fio.encode('utf8'))
+    status=email_db.add_user_to_exim_db(log,db_host=conf.db_email_server2_host, db_name=conf.db_email_server2_name, db_user=conf.db_email_server2_user, db_passwd=conf.db_email_server2_passwd, email_prefix=email_prefix, email_domain=conf.email_server2_domain, email_passwd=passwd, email_descr=fio)
     if status == STATUS_SUCCESS:
       log.info("SUCCESS add email to server: %s, %s" % (conf.db_email_server2_host, "%s@%s" % (email_prefix,conf.email_server2_domain)))
       print("""<p><span class='success'>УСПЕШНО</span> заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server2_domain,conf.db_email_server2_host))
@@ -204,10 +204,10 @@ https://arm-sit.rs.int/index.php?AdUsersSearch[fio]=&AdUsersSearch[old_familiya]
     {\
     "admin":web_user_name,\
       "ip":web_user_addr,\
-      "fio":user["fio"].encode('utf8'),\
+      "fio":user["fio"],\
       "login":user["login"],\
       "mail_login":mail_login,\
-      "descr":user["description"].encode('utf8'),\
+      "descr":user["description"],\
       "email1":email_server1,\
       "email2":email_server2\
     }
@@ -241,7 +241,7 @@ login: %(login)s, passwd: '%(passwd)s', email_server1: %(email_server1)s, email_
     "user_familia":user_familia,
     "user_name":user_name,
     "user_otchestvo":user_otchestvo,
-    "user_description":user_description,
+    "user_description":description,
     "login":user["login"],
     "passwd":user["passwd"],
     "email_server1":user["email_server1"],
@@ -615,7 +615,7 @@ def main():
     # Обрабатываем ФИО - добавляем пользователя и выводим на экран результат:
     user={}
 
-    if create_drsk_user(user_familia,user_name,user_otchestvo,user_description,ou_name,user) is False:
+    if create_drsk_user(user_familia,user_name,user_otchestvo,user_description,ou_name,user,web_user_name,web_user_addr) is False:
       log.error("ERROR create user: %s, %s, %s, %s" % (user_familia, user_name, user_otchestvo, user_description) )
       print("<h1>Внутренняя ошибка!</h1>")
       print("</body></html>")
