@@ -103,7 +103,7 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
     log.info("NOTICE: conf.db_email_server1_passwd is not defined - skip add email to server1")
   if create_email:
     num_op+=1
-    status=email_db.add_user_to_exim_db(log,db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=conf.email_server1_domain, email_passwd=passwd, email_descr=fio.encode('utf8'))
+    status=email_db.add_user_to_exim_db(log,db_host=conf.db_email_server1_host, db_name=conf.db_email_server1_name, db_user=conf.db_email_server1_user, db_passwd=conf.db_email_server1_passwd, email_prefix=email_prefix, email_domain=conf.email_server1_domain, email_passwd=passwd, email_descr=fio)
     if status == STATUS_SUCCESS:
       log.info("SUCCESS add email to server: %s, %s" % (conf.db_email_server1_host, "%s@%s" % (email_prefix,conf.email_server1_domain)))
       print("""<p><span class='success'>УСПЕШНО</span> заведён ящик %s@%s на сервере %s</p>""" % (email_prefix,conf.email_server1_domain,conf.db_email_server1_host))
@@ -166,17 +166,17 @@ def create_drsk_user(user_familia,user_name,user_otchestvo,description, ou_name,
         add_user_name=web_user_name,\
         add_ip=web_user_addr)
     if status == STATUS_SUCCESS:
-      print("""<p><span class='success'>УСПЕШНО</span> добавили пользователя '%s' в базу пользователей</p>""" % user["login"].encode('utf8'))
-      log.info("""SUCCESS - добавили пользователя '%s' в базу пользователей""" %  user["login"].encode('utf8'))
+      print("""<p><span class='success'>УСПЕШНО</span> добавили пользователя '%s' в базу пользователей</p>""" % user["login"])
+      log.info("""SUCCESS - добавили пользователя '%s' в базу пользователей""" %  user["login"])
       full_status["добавление пользователя в базу пользователей"]="успешно"
       num_success_op+=1
     elif status == STATUS_USER_EXIST:
       print("""<p><span class='error'>ОШИБКА</span> добавления записи о пользователе в базу данных (postgres) пользователей - ПОЛЬЗОВАЕЛЬ с таким ящиком rsprim.ru (%s) УЖЕ СУЩЕСТВУЕТ</p>""" % user["email_server2"])
-      log.error("""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"].encode('utf8'))
+      log.error("""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"])
       full_status["добавление пользователя в базу пользователей"]="ошибка - такой пользователь уже существует"
     else:
-      print("""<p><span class='error'>ОШИБКА</span> добавления записи о пользователе '%s' в базу данных (postgres) пользователей - обратитесь к системному администратору</p>""" % user["login"].encode('utf8'))
-      log.error("""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"].encode('utf8'))
+      print("""<p><span class='error'>ОШИБКА</span> добавления записи о пользователе '%s' в базу данных (postgres) пользователей - обратитесь к системному администратору</p>""" % user["login"])
+      log.error("""ERROR - ошибка добавления записи пользователя '%s' базу пользоватлей""" % user["login"])
       full_status["добавление пользователя в базу пользователей"]="ошибка - внутренняя ошибка скрипта"
   #===================== Отправляем по почте данные пользователя, но без пароля: =================
   if num_success_op!=0:
