@@ -626,17 +626,17 @@ def main():
       print("""<p>Выполнено %d из %d задач</p>""" % (user["num_success_op"], user["num_op"]))
       print("""<h2>Успешно создан пользователь:</h2>""")
       print("""<h2>Имя:</h2>
-      <p>%s</p>""" % user["fio"].encode('utf8'))
+      <p>%s</p>""" % user["fio"])
       print("""<h2>Логин:</h2>
-      <p>%s</p>""" % user["login"].encode('utf8'))
+      <p>%s</p>""" % user["login"])
       print("""<h2>Пароль:</h2>
-      <p><span class="password">%s</span></p>""" % user["passwd"].encode('utf8'))
+      <p><span class="password">%s</span></p>""" % user["passwd"])
       print("""<h2>Префикс почты:</h2>
-      <p>%s</p>""" % user["email_prefix"].encode('utf8'))
+      <p>%s</p>""" % user["email_prefix"])
       print("""<h2>Почтовый ящик1:</h2>
-      <p>%s</p>""" % user["email_server1"].encode('utf8'))
+      <p>%s</p>""" % user["email_server1"])
       print("""<h2>Почтовый ящик2:</h2>
-      <p>%s</p>""" % user["email_server2"].encode('utf8'))
+      <p>%s</p>""" % user["email_server2"])
       print("<h2>Будьте внимательны с символами в пароле:</h2>")
       print("<p><span class='info'>1 - один, l - английская прописная Л, 0 - ноль, O - английская буква, I - английская большая И</span></p>")
       print("</body></html>")
