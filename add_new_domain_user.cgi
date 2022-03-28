@@ -428,7 +428,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, ema
 
 def get_passwd():
   try:
-    t = subprocess.Popen(("pwgen","-s" ,"8", "1"), stderr=subprocess.PIPE,stdout=subprocess.PIPE)
+    t = subprocess.Popen(("pwgen","-s" ,"9", "1"), stderr=subprocess.PIPE,stdout=subprocess.PIPE)
     ret_code=t.wait()
     t_stdout_list=t.stdout.readlines()
     return t_stdout_list[0].decode('utf8').strip('\n')
