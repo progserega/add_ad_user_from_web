@@ -347,9 +347,16 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, ema
     #del_member = [(ldap.MOD_DELETE, 'member', user_dn)]
 
     #unicode_email = unicode(email, 'iso-8859-1')
-    email_value = [email.encode('utf-16-le')]
+    #email_value = email.encode('utf-16-le')
+    email_value = email.encode('utf8')
+#    log.info("test: email=%s"%email)
+#    log.info("encoded:")
+#    log.info(email_value)
+#    email_value = b'atest@mail.ru'
+#    log.info("byte::")
+#    log.info(email_value)
     #email_value = email.getBytes("UTF-16LE")
-    mod_email = [(ldap.MOD_REPLACE, 'mail', email_value)]
+    mod_email = [(ldap.MOD_REPLACE, 'mail', [email_value])]
 
     # Add the new user account
     try:
