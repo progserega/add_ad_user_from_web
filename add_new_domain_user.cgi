@@ -347,8 +347,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, ema
     #del_member = [(ldap.MOD_DELETE, 'member', user_dn)]
 
     #unicode_email = unicode(email, 'iso-8859-1')
-    #email_value = email.encode('utf-16-le')
-    email_value = [email]
+    email_value = [email.encode('utf-16-le')]
     #email_value = email.getBytes("UTF-16LE")
     mod_email = [(ldap.MOD_REPLACE, 'mail', email_value)]
 
