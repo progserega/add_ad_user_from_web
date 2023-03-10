@@ -44,6 +44,9 @@ user_phone_db_passwd="secretpwd"
 send_report_to=["admin1@company.ru", "admin2@company.ru"]
 send_report_from="admin@company.ru"
 
+# количество символов в генерируемом пароле:
+password_lenght=8
+
 #========= Global ===========
 log_path="/var/log/add_user_to_ad.log"
 # how match keep backup log files:
