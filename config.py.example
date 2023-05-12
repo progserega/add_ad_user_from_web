@@ -46,6 +46,8 @@ send_report_from="admin@company.ru"
 
 # количество символов в генерируемом пароле:
 password_lenght=8
+# имеет ли пароль срок годности у создаваемых пользователей - True - да:
+user_password_is_expired = True
 
 #========= Global ===========
 log_path="/var/log/add_user_to_ad.log"
