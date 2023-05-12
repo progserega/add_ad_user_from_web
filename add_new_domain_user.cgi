@@ -340,7 +340,7 @@ def CreateADUser(username, password, name, familiya, otchestvo, description, ema
     add_pass = [(ldap.MOD_REPLACE, 'unicodePwd', [password_value])]
     # 512 will set user account to enabled
     flags = NORMAL_ACCOUNT
-    if conf.user_password_is_expired == True:
+    if conf.user_password_is_expired == False:
       flags += DONT_EXPIRE_PASSWORD
     mod_acct = [(ldap.MOD_REPLACE, 'userAccountControl', ("%d" % flags).encode('utf8') )]
     # New group membership
